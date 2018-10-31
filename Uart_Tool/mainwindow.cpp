@@ -49,11 +49,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
 uint8_t buf[4096];
 uint32_t read_off = 0;
-
+uint32_t timeout = 0;
 void MainWindow::timer_timeout()
 {
     int32_t len = 0;
     uint8_t tmp_buf[1024];
+    uint8_t print_buf[16];
     len = uartModule.uartReadBuff(tmp_buf);
     if(len > 0)
     {
@@ -62,6 +63,7 @@ void MainWindow::timer_timeout()
 
     if(read_flag)
     {
+        timeout = 0;
         file.seek(read_off);
         len = file.read((char *)buf, (file_size - read_off >= 4096 ? 4096 : (file_size - read_off)));
         if(len < 0)
@@ -70,13 +72,27 @@ void MainWindow::timer_timeout()
         }
         read_flag = false;
         send_file(read_off * 4096, buf, len);
+        sprintf((char *)print_buf, ":%3d%", read_off * 100 / file_size);
+        textShowString(print_buf, 5);
+    }
+    else if(read_off != 0)
+    {
+        timeout++;
+        if(timeout > 50)
+        {
+            if(read_off + 4096 <= file_size)
+            {
+                read_flag = true;
+            }
+            timeout = 0;
+        }
     }
     if(finished)
     {
         finished = false;
         textShowString((uint8_t *)"-----ok-----", 12);
     }
-    quartTimer->start(500);
+    quartTimer->start(100);
 }
 
 
@@ -147,4 +163,9 @@ void MainWindow::on_Sendfile_clicked()
         textShowString((uint8_t *)"-----start-----", 15);
         read_flag = true;
     }
+}
+
+void MainWindow::on_clear_clicked()
+{
+    ui->textEdit->clear();
 }

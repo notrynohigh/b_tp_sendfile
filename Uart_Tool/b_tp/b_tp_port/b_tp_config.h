@@ -68,7 +68,7 @@ typedef signed int         b_TPS32;
 #define B_TP_STATIC_BUF_LEN 	  (4096 + 32)
 
 
-#define B_TP_DEBUG_NO_CHECK       1
+#define B_TP_DEBUG_NO_CHECK       0
 /** configure end ---------------------------------------------*/
 
 #pragma pack(1)

@@ -22,6 +22,8 @@ private slots:
 
     void on_Sendfile_clicked();
 
+    void on_clear_clicked();
+
 private:
     Ui::MainWindow *ui;
     QTimer *quartTimer;

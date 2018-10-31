@@ -30,8 +30,12 @@ typedef struct
 typedef struct
 {
     uint32_t address;
+    uint32_t len;
     uint8_t buf[4096];
 }send_file_t;
+
+
+
 
 
 

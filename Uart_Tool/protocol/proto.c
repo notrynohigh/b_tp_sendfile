@@ -21,6 +21,7 @@ void send_file(uint32_t address, uint8_t table[], uint32_t len)
 {
     send_file_t send_file_s;
     send_file_s.address = address;
+    send_file_s.len = len;
     memcpy(send_file_s.buf, table, len);
     if(len < 4096)
         tc_send(CMD_SEND_FILE, 4, &send_file_s, sizeof(send_file_t));
