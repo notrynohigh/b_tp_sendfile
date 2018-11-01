@@ -71,8 +71,8 @@ void MainWindow::timer_timeout()
             len = 0;
         }
         read_flag = false;
-        send_file(read_off * 4096, buf, len);
-        sprintf((char *)print_buf, ":%3d%", read_off * 100 / file_size);
+        send_file(read_off, buf, len);
+        sprintf((char *)print_buf, ":%3d\%", read_off * 100 / file_size);
         textShowString(print_buf, 5);
     }
     else if(read_off != 0)
