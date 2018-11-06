@@ -17,7 +17,7 @@ void tc_send(uint8_t cmd, uint8_t status, uint8_t *pbuf, uint32_t len)
 }
 
 
-void send_file(uint32_t address, uint8_t table[], uint32_t len)
+void send_img_file(uint32_t address, uint8_t table[], uint32_t len)
 {
     send_file_t send_file_s;
     send_file_s.address = address;
@@ -28,7 +28,16 @@ void send_file(uint32_t address, uint8_t table[], uint32_t len)
     tc_send(CMD_SEND_FILE, 0, &send_file_s, sizeof(send_file_t));
 }
 
-
+void send_algo_file(uint32_t address, uint8_t table[], uint32_t len)
+{
+    send_file_t send_file_s;
+    send_file_s.address = address;
+    send_file_s.len = len;
+    memcpy(send_file_s.buf, table, len);
+    if(len < 4096)
+        tc_send(CMD_SEND_ALGO_P, 4, &send_file_s, sizeof(send_file_t));
+    tc_send(CMD_SEND_ALGO_P, 0, &send_file_s, sizeof(send_file_t));
+}
 
 
 

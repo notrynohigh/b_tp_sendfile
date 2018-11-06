@@ -7,7 +7,8 @@
 extern "C" {
 #endif
 
-#define CMD_SEND_FILE    0X1
+#define CMD_SEND_FILE      0X1
+#define CMD_SEND_ALGO_P    0X2
 
 #pragma pack(1)
 
@@ -42,8 +43,8 @@ typedef struct
 #pragma pack()
 
 
-
-void send_file(uint32_t address, uint8_t table[], uint32_t);
+void send_algo_file(uint32_t address, uint8_t table[], uint32_t len);
+void send_img_file(uint32_t address, uint8_t table[], uint32_t);
 
 #ifdef __cplusplus
 }

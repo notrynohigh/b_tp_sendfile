@@ -18,10 +18,22 @@ void MainWindow::textShowString(uint8_t *pbuf, uint32_t len)
     ui->textEdit->append(QString::fromLocal8Bit((const char *)pbuf, len));
 }
 
-QFile file("algo.bin");
+QFile file_img("img.bin");
+QFile file_algo("algo.bin");
+
 uint32_t file_size = 0;
-bool read_flag = false;
-bool finished = false;
+
+#define STANDBY           0
+#define READ_IMG_DATA     1
+#define READ_ALGO_DATA    2
+#define WAIT_IMG_ACK      3
+#define WAIT_ALGO_ACK     4
+#define WAIT_STANDBY      5
+
+
+uint8_t status = STANDBY;
+
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -29,22 +41,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->COMx->addItems(uartModule.uartComAvailable);
 
-    if(! file.open(QIODevice::ReadOnly))
-    {
-        textShowString((uint8_t *)"failed to open file", 19);
-    }
-    else
-    {
-        file_size = file.size();
-        quartTimer = new QTimer(this);
-        quartTimer->setSingleShot(true);
-        connect(quartTimer, SIGNAL(timeout()), this, SLOT(timer_timeout()));
-        quartTimer->start(500);
-    }
+    quartTimer = new QTimer(this);
+    quartTimer->setSingleShot(true);
+    connect(quartTimer, SIGNAL(timeout()), this, SLOT(timer_timeout()));
+    quartTimer->start(500);
 
     b_tp_reg_callback(b_tp_callback);
-
-
 }
 
 uint8_t buf[4096];
@@ -61,37 +63,52 @@ void MainWindow::timer_timeout()
         b_tp_receive_data(tmp_buf, len);
     }
 
-    if(read_flag)
+    if(status == READ_IMG_DATA)
     {
         timeout = 0;
-        file.seek(read_off);
-        len = file.read((char *)buf, (file_size - read_off >= 4096 ? 4096 : (file_size - read_off)));
+        file_img.seek(read_off);
+        len = file_img.read((char *)buf, (file_size - read_off >= 4096 ? 4096 : (file_size - read_off)));
         if(len < 0)
         {
             len = 0;
         }
-        read_flag = false;
-        send_file(read_off, buf, len);
+        status = WAIT_IMG_ACK;
+        send_img_file(read_off, buf, len);
         sprintf((char *)print_buf, ":%3d\%", read_off * 100 / file_size);
         textShowString(print_buf, 5);
     }
-    else if(read_off != 0)
+    if(status == READ_ALGO_DATA)
+    {
+        timeout = 0;
+        file_algo.seek(read_off);
+        len = file_algo.read((char *)buf, (file_size - read_off >= 4096 ? 4096 : (file_size - read_off)));
+        if(len < 0)
+        {
+            len = 0;
+        }
+        status = WAIT_ALGO_ACK;
+        send_algo_file(read_off, buf, len);
+        sprintf((char *)print_buf, ":%3d\%", read_off * 100 / file_size);
+        textShowString(print_buf, 5);
+    }
+
+    if(status == WAIT_IMG_ACK || status == WAIT_ALGO_ACK)
     {
         timeout++;
         if(timeout > 50)
         {
-            if(read_off + 4096 <= file_size)
-            {
-                read_flag = true;
-            }
+            status = (status == WAIT_IMG_ACK) ? READ_IMG_DATA : READ_ALGO_DATA;
             timeout = 0;
         }
     }
-    if(finished)
+    if(status == WAIT_STANDBY)
     {
-        finished = false;
         textShowString((uint8_t *)"-----ok-----", 12);
+        status = STANDBY;
+        ui->pushButton->setEnabled(true);
+        ui->Sendfile->setEnabled(true);
     }
+
     quartTimer->start(100);
 }
 
@@ -113,19 +130,35 @@ void b_tp_callback(uint8_t *pbuf, uint32_t len)
 {
     if(pbuf[0] == CMD_SEND_FILE)
     {
-        if(pbuf[1] == 0)
+        if(pbuf[1] == 0 && status == WAIT_IMG_ACK)
         {
             if(read_off + 4096 <= file_size)
             {
                 read_off += 4096;
-                read_flag = true;
+                status = READ_IMG_DATA;
             }
             else
             {
-                finished = true;
+                file_img.close();
+                status = WAIT_STANDBY;
             }
         }
-
+    }
+    else if(pbuf[0] == CMD_SEND_ALGO_P)
+    {
+        if(pbuf[1] == 0 && status == WAIT_ALGO_ACK)
+        {
+            if(read_off + 4096 <= file_size)
+            {
+                read_off += 4096;
+                status = READ_ALGO_DATA;
+            }
+            else
+            {
+                file_algo.close();
+                status = WAIT_STANDBY;
+            }
+        }
     }
 }
 
@@ -157,15 +190,45 @@ void MainWindow::on_opencom_clicked()
 
 void MainWindow::on_Sendfile_clicked()
 {
-    read_off = 0;
     if(ui->opencom->text() == "关闭串口")
     {
+        ui->Sendfile->setEnabled(false);
+        ui->pushButton->setEnabled(false);
+        if(!file_img.open(QIODevice::ReadOnly))
+        {
+            ui->Sendfile->setEnabled(true);
+            ui->pushButton->setEnabled(true);
+            textShowString((uint8_t *)"failed to open file", 19);
+            return;
+        }
+        file_size = file_img.size();
         textShowString((uint8_t *)"-----start-----", 15);
-        read_flag = true;
+        read_off = 0;
+        status = READ_IMG_DATA;
     }
 }
 
 void MainWindow::on_clear_clicked()
 {
     ui->textEdit->clear();
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    if(ui->opencom->text() == "关闭串口")
+    {
+        ui->Sendfile->setEnabled(false);
+        ui->pushButton->setEnabled(false);
+        if(!file_algo.open(QIODevice::ReadOnly))
+        {
+            ui->Sendfile->setEnabled(true);
+            ui->pushButton->setEnabled(true);
+            textShowString((uint8_t *)"failed to open file", 19);
+            return;
+        }
+        file_size = file_algo.size();
+        textShowString((uint8_t *)"-----start-----", 15);
+        read_off = 0;
+        status = READ_ALGO_DATA;
+    }
 }

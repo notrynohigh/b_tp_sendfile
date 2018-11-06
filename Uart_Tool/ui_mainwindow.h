@@ -35,9 +35,12 @@ public:
     QPushButton *refresh_com;
     QComboBox *COMx;
     QPushButton *opencom;
-    QPushButton *Sendfile;
     QTextEdit *textEdit;
+    QWidget *widget;
+    QHBoxLayout *horizontalLayout_2;
+    QPushButton *Sendfile;
     QPushButton *clear;
+    QPushButton *pushButton;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -80,15 +83,32 @@ public:
 
         horizontalLayout->addWidget(opencom);
 
-        Sendfile = new QPushButton(centralWidget);
-        Sendfile->setObjectName(QStringLiteral("Sendfile"));
-        Sendfile->setGeometry(QRect(40, 430, 101, 31));
         textEdit = new QTextEdit(centralWidget);
         textEdit->setObjectName(QStringLiteral("textEdit"));
         textEdit->setGeometry(QRect(20, 50, 331, 361));
-        clear = new QPushButton(centralWidget);
+        widget = new QWidget(centralWidget);
+        widget->setObjectName(QStringLiteral("widget"));
+        widget->setGeometry(QRect(50, 430, 244, 25));
+        horizontalLayout_2 = new QHBoxLayout(widget);
+        horizontalLayout_2->setSpacing(6);
+        horizontalLayout_2->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
+        horizontalLayout_2->setContentsMargins(0, 0, 0, 0);
+        Sendfile = new QPushButton(widget);
+        Sendfile->setObjectName(QStringLiteral("Sendfile"));
+
+        horizontalLayout_2->addWidget(Sendfile);
+
+        clear = new QPushButton(widget);
         clear->setObjectName(QStringLiteral("clear"));
-        clear->setGeometry(QRect(180, 430, 101, 31));
+
+        horizontalLayout_2->addWidget(clear);
+
+        pushButton = new QPushButton(widget);
+        pushButton->setObjectName(QStringLiteral("pushButton"));
+
+        horizontalLayout_2->addWidget(pushButton);
+
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -111,8 +131,9 @@ public:
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "UART_TOOL", Q_NULLPTR));
         refresh_com->setText(QApplication::translate("MainWindow", "\345\210\267\346\226\260\347\253\257\345\217\243", Q_NULLPTR));
         opencom->setText(QApplication::translate("MainWindow", "\346\211\223\345\274\200\344\270\262\345\217\243", Q_NULLPTR));
-        Sendfile->setText(QApplication::translate("MainWindow", "\345\217\221\351\200\201\346\226\207\344\273\266", Q_NULLPTR));
+        Sendfile->setText(QApplication::translate("MainWindow", "\345\217\221\351\200\201\345\233\276\347\211\207", Q_NULLPTR));
         clear->setText(QApplication::translate("MainWindow", "\346\270\205\347\251\272", Q_NULLPTR));
+        pushButton->setText(QApplication::translate("MainWindow", "\345\217\221\351\200\201\347\256\227\346\263\225\345\217\202\346\225\260", Q_NULLPTR));
     } // retranslateUi
 
 };
