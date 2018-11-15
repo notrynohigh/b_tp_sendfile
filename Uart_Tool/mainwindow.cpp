@@ -177,6 +177,8 @@ void MainWindow::on_opencom_clicked()
         uartModule.uartClosePort();
         ui->COMx->setEnabled(true);
         ui->opencom->setText("打开串口");
+        ui->Sendfile->setEnabled(true);
+        ui->pushButton->setEnabled(true);
     }
     else
     {
