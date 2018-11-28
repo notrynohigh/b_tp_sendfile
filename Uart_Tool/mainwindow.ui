@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>UART_TOOL</string>
+   <string>JPEG</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QWidget" name="layoutWidget">
@@ -75,7 +75,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>50</x>
@@ -86,9 +86,9 @@
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <widget class="QPushButton" name="Sendfile">
+      <widget class="QPushButton" name="pushButton">
        <property name="text">
-        <string>发送图片</string>
+        <string>结束接收</string>
        </property>
       </widget>
      </item>
@@ -96,13 +96,6 @@
       <widget class="QPushButton" name="clear">
        <property name="text">
         <string>清空</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButton">
-       <property name="text">
-        <string>发送算法参数</string>
        </property>
       </widget>
      </item>
