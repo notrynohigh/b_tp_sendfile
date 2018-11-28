@@ -72,6 +72,7 @@ MainWindow::MainWindow(QWidget *parent) :
 void MainWindow::timer_timeout()
 {
     int32_t len = 0;
+    uint32_t i = 0;
     len = uartModule.uartReadBuff(buf_tmp);
     if(len > 0)
     {
@@ -104,14 +105,39 @@ void MainWindow::timer_timeout()
     else
     {
         tt++;
-        if((w_file && tt > 3000) || (w_file && buf[f_si - 1] == 0xd9 && buf[f_si - 2] == 0xff))
+
+        if(w_file)
         {
-            file_j.write((const char *)buf, f_si);
-            file_j.close();
-            w_file = false;
-            f_si = 0;
-            ui->textEdit->append("jpeg ...");
+
+            if(tt > 3000)
+            {
+                file_j.write((const char *)buf, f_si);
+                file_j.close();
+                w_file = false;
+                f_si = 0;
+                ui->textEdit->append("jpeg timeout");
+            }
+            else
+            {
+                for(i = 0;(i < f_si && i < 55);i++)
+                {
+                    if(buf[f_si - 1 - i] == 0xd9)
+                    {
+                        if(buf[f_si - 1 - i - 1] == 0xff)
+                        {
+                            f_si -= i;
+                            file_j.write((const char *)buf, f_si);
+                            file_j.close();
+                            w_file = false;
+                            f_si = 0;
+                            ui->textEdit->append("jpeg ok");
+                        }
+                    }
+                }
+            }
         }
+        else
+            tt = 0;
     }
     quartTimer->start(100);
 }
