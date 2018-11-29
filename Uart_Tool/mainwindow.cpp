@@ -7,6 +7,7 @@
 #include "./protocol/proto.h"
 #include "./b_tp/inc/b_tp.h"
 #include <QDir>
+#include <QTime>
 uartClass uartModule;
 
 extern "C" void b_tp_port_uart_send(uint8_t *pbuf, uint32_t len);
@@ -44,6 +45,7 @@ QFile file_j;
 FILE *pf;
 uint32_t tt = 0;
 QDir dird;
+QTime tim;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -86,10 +88,14 @@ void MainWindow::timer_timeout()
                 file_j.close();
                 w_file = false;
                 f_si = 0;
+                tim = QTime::currentTime();
+                ui->textEdit->append(tim.toString());
                 ui->textEdit->append("jpeg ok");
             }
             if(!w_file)
             {
+                tim = QTime::currentTime();
+                ui->textEdit->append(tim.toString());
                 sprintf(name, "C:\\JPEG\\%03d.jpeg", j_count);
                 ui->textEdit->append(name);
                 pf = fopen(name, "wb");
@@ -115,6 +121,8 @@ void MainWindow::timer_timeout()
                 file_j.close();
                 w_file = false;
                 f_si = 0;
+                tim = QTime::currentTime();
+                ui->textEdit->append(tim.toString());
                 ui->textEdit->append("jpeg timeout");
             }
             else
@@ -130,6 +138,8 @@ void MainWindow::timer_timeout()
                             file_j.close();
                             w_file = false;
                             f_si = 0;
+                            tim = QTime::currentTime();
+                            ui->textEdit->append(tim.toString());
                             ui->textEdit->append("jpeg ok");
                         }
                     }
