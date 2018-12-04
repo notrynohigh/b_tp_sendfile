@@ -70,7 +70,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 }
 
-
+uint32_t w_index = 0xfffff;
 void MainWindow::timer_timeout()
 {
     int32_t len = 0;
@@ -106,6 +106,8 @@ void MainWindow::timer_timeout()
             }
         }
         memcpy(buf + f_si, buf_tmp, len);
+        if(w_index == 0xfffff)
+            w_index = f_si;
         f_si += len;
     }
     else
@@ -143,6 +145,12 @@ void MainWindow::timer_timeout()
                             ui->textEdit->append("jpeg ok");
                         }
                     }
+                }
+
+                if(w_file && tt > 30 && w_index != 0xfffff)
+                {
+                    f_si = w_index;
+                    w_index = 0xfffff;
                 }
             }
         }
