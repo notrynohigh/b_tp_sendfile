@@ -75,6 +75,7 @@ void MainWindow::timer_timeout()
 {
     int32_t len = 0;
     uint32_t i = 0;
+    char stable[8];
     len = uartModule.uartReadBuff(buf_tmp);
     if(len > 0)
     {
@@ -90,12 +91,16 @@ void MainWindow::timer_timeout()
                 f_si = 0;
                 tim = QTime::currentTime();
                 ui->textEdit->append(tim.toString());
+                itoa(tim.msec(), stable, 10);
+                ui->textEdit->append(stable);
                 ui->textEdit->append("jpeg ok");
             }
             if(!w_file)
             {
                 tim = QTime::currentTime();
                 ui->textEdit->append(tim.toString());
+                itoa(tim.msec(), stable, 10);
+                ui->textEdit->append(stable);
                 sprintf(name, "C:\\JPEG\\%03d.jpeg", j_count);
                 ui->textEdit->append(name);
                 pf = fopen(name, "wb");
@@ -125,6 +130,8 @@ void MainWindow::timer_timeout()
                 f_si = 0;
                 tim = QTime::currentTime();
                 ui->textEdit->append(tim.toString());
+                itoa(tim.msec(), stable, 10);
+                ui->textEdit->append(stable);
                 ui->textEdit->append("jpeg timeout");
             }
             else
@@ -142,6 +149,8 @@ void MainWindow::timer_timeout()
                             f_si = 0;
                             tim = QTime::currentTime();
                             ui->textEdit->append(tim.toString());
+                            itoa(tim.msec(), stable, 10);
+                            ui->textEdit->append(stable);
                             ui->textEdit->append("jpeg ok");
                         }
                     }

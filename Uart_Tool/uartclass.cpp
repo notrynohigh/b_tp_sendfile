@@ -42,7 +42,7 @@ bool uartClass::uartOpenPort(const QString portName)
     uartPort.setPortName(portName);
     if(uartPort.open(QSerialPort::ReadWrite))
     {
-        uartPort.setBaudRate(115200);
+        uartPort.setBaudRate(230400);
         uartOpenStatus = true;
     }
     return uartOpenStatus;
