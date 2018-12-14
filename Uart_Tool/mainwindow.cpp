@@ -46,6 +46,7 @@ FILE *pf;
 uint32_t tt = 0;
 QDir dird;
 QTime tim;
+QStringList fl;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -67,6 +68,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
        }
     }
+    dird.setCurrent(path);
+    fl = dird.entryList(QDir::Files);
+    j_count = fl.size();
 
 }
 
