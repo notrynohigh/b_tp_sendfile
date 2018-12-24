@@ -8,6 +8,12 @@
 #include "./b_tp/inc/b_tp.h"
 #include <QDir>
 #include <QTime>
+#include "qfiledialog.h"
+#include "qdebug.h"
+#include "qimagereader.h"
+#include "qpixmap.h"
+
+
 uartClass uartModule;
 
 extern "C" void b_tp_port_uart_send(uint8_t *pbuf, uint32_t len);
@@ -20,20 +26,7 @@ void MainWindow::textShowString(uint8_t *pbuf, uint32_t len)
     ui->textEdit->append(QString::fromLocal8Bit((const char *)pbuf, len));
 }
 
-QFile file_img("img.bin");
-QFile file_algo("algo.bin");
 
-uint32_t file_size = 0;
-
-#define STANDBY           0
-#define READ_IMG_DATA     1
-#define READ_ALGO_DATA    2
-#define WAIT_IMG_ACK      3
-#define WAIT_ALGO_ACK     4
-#define WAIT_STANDBY      5
-
-
-uint8_t status = STANDBY;
 
 uint8_t buf[1024 * 10];
 uint32_t f_si = 0;
@@ -47,10 +40,15 @@ uint32_t tt = 0;
 QDir dird;
 QTime tim;
 QStringList fl;
+QString path;
+QFile txt_f;
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    char ptable[64];
+    int plen = 0;
     ui->setupUi(this);
     ui->COMx->addItems(uartModule.uartComAvailable);
 
@@ -58,8 +56,23 @@ MainWindow::MainWindow(QWidget *parent) :
     quartTimer->setSingleShot(true);
     connect(quartTimer, SIGNAL(timeout()), this, SLOT(timer_timeout()));
     quartTimer->start(100);
-    std::string pach("C:\\JPEG\\");
-    QString path = QString::fromStdString(pach);
+
+
+    txt_f.setFileName("./path.txt");
+    txt_f.open(QFile::ReadWrite);
+    plen = txt_f.readLine(ptable, 64);
+
+    if(plen <= 0)
+    {
+        txt_f.write("C:/JPEG\r\n");
+        memcpy(ptable, "C:/JPEG\r\n", 9);
+        plen = 9;
+    }
+    txt_f.close();
+
+    ptable[plen - 2] = 0x0;
+    ui->label_path->setText(ptable);
+    path = QString::fromStdString(ptable);
 
     if(!dird.exists(path))
     {
@@ -68,18 +81,47 @@ MainWindow::MainWindow(QWidget *parent) :
 
        }
     }
-    dird.setCurrent(path);
+    dird.setPath(path);
     fl = dird.entryList(QDir::Files);
     j_count = fl.size();
-
+    show_img();
 }
 
+void MainWindow::show_img()
+{
+    char table[64];
+    int len;
+    QString name;
+    QString path_l;
+    if(j_count > 0)
+    {
+        len = sprintf(table, "/%03d.jpeg",j_count - 1);
+        name = QString::fromStdString(table);
+        path_l = path.append(name);
+    }
+    else
+    {
+        path_l = "./no_img.png";
+    }
+
+    QImageReader reader;
+    QImage img;
+
+    reader.setFileName(path_l);
+    img = reader.read();
+    ui->label_img->setPixmap(QPixmap::fromImage(img));
+}
+
+
+
 uint32_t w_index = 0xfffff;
+uint32_t s_msec = 0;
 void MainWindow::timer_timeout()
 {
     int32_t len = 0;
     uint32_t i = 0;
-    char stable[8];
+
+    char stable[16];
     len = uartModule.uartReadBuff(buf_tmp);
     if(len > 0)
     {
@@ -93,19 +135,20 @@ void MainWindow::timer_timeout()
                 file_j.close();
                 w_file = false;
                 f_si = 0;
+
                 tim = QTime::currentTime();
-                ui->textEdit->append(tim.toString());
-                itoa(tim.msec(), stable, 10);
-                ui->textEdit->append(stable);
+                s_msec = tim.msecsSinceStartOfDay() - s_msec;
                 ui->textEdit->append("jpeg ok");
+                sprintf(stable, ":%dms\r\n", s_msec);
+                ui->textEdit->append(stable);
+                show_img();
             }
             if(!w_file)
             {
                 tim = QTime::currentTime();
-                ui->textEdit->append(tim.toString());
-                itoa(tim.msec(), stable, 10);
-                ui->textEdit->append(stable);
-                sprintf(name, "C:\\JPEG\\%03d.jpeg", j_count);
+                s_msec = tim.msecsSinceStartOfDay();
+
+                sprintf(name, "%s/%03d.jpeg",path.toLocal8Bit(), j_count);
                 ui->textEdit->append(name);
                 pf = fopen(name, "wb");
                 j_count++;
@@ -133,10 +176,11 @@ void MainWindow::timer_timeout()
                 w_file = false;
                 f_si = 0;
                 tim = QTime::currentTime();
-                ui->textEdit->append(tim.toString());
-                itoa(tim.msec(), stable, 10);
+                s_msec = tim.msecsSinceStartOfDay() - s_msec;
+                ui->textEdit->append("timeout");
+                sprintf(stable, ":%dms\r\n", s_msec);
                 ui->textEdit->append(stable);
-                ui->textEdit->append("jpeg timeout");
+                show_img();
             }
             else
             {
@@ -152,10 +196,11 @@ void MainWindow::timer_timeout()
                             w_file = false;
                             f_si = 0;
                             tim = QTime::currentTime();
-                            ui->textEdit->append(tim.toString());
-                            itoa(tim.msec(), stable, 10);
-                            ui->textEdit->append(stable);
+                            s_msec = tim.msecsSinceStartOfDay() - s_msec;
                             ui->textEdit->append("jpeg ok");
+                            sprintf(stable, ":%dms\r\n", s_msec);
+                            ui->textEdit->append(stable);
+                            show_img();
                         }
                     }
                 }
@@ -237,5 +282,25 @@ void MainWindow::on_pushButton_clicked()
         w_file = false;
         f_si = 0;
         ui->textEdit->append("jpeg ..");
+    }
+}
+
+void MainWindow::on_c_path_clicked()
+{
+    QFileDialog dialog;
+    QString name;
+    name = dialog.getExistingDirectory(this, "jpeg dir");
+    if(name != "" && name != path)
+    {
+        ui->label_path->setText(name);
+        name.append("\r\n");
+        txt_f.open(QFile::ReadWrite);
+        txt_f.seek(0);
+        txt_f.write(name.toLocal8Bit());
+        txt_f.close();
+        path = name;
+        dird.setPath(path);
+        fl = dird.entryList(QDir::Files);
+        j_count = fl.size();
     }
 }

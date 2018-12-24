@@ -15,6 +15,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void textShowString(uint8_t *pbuf, uint32_t len);
+    void show_img();
 private slots:
     void on_refresh_com_clicked();
     void timer_timeout();
@@ -25,6 +26,8 @@ private slots:
     void on_clear_clicked();
 
     void on_pushButton_clicked();
+
+    void on_c_path_clicked();
 
 private:
     Ui::MainWindow *ui;

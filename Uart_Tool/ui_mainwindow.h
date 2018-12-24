@@ -16,6 +16,7 @@
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
@@ -40,6 +41,10 @@ public:
     QHBoxLayout *horizontalLayout_2;
     QPushButton *pushButton;
     QPushButton *clear;
+    QLabel *label_img;
+    QLabel *label_path;
+    QPushButton *c_path;
+    QLabel *label;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -48,14 +53,14 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(400, 530);
+        MainWindow->resize(950, 575);
         MainWindow->setMinimumSize(QSize(400, 530));
-        MainWindow->setMaximumSize(QSize(400, 530));
+        MainWindow->setMaximumSize(QSize(950, 600));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         layoutWidget = new QWidget(centralWidget);
         layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
-        layoutWidget->setGeometry(QRect(10, 10, 341, 31));
+        layoutWidget->setGeometry(QRect(10, 50, 341, 31));
         horizontalLayout = new QHBoxLayout(layoutWidget);
         horizontalLayout->setSpacing(6);
         horizontalLayout->setContentsMargins(11, 11, 11, 11);
@@ -84,10 +89,10 @@ public:
 
         textEdit = new QTextEdit(centralWidget);
         textEdit->setObjectName(QStringLiteral("textEdit"));
-        textEdit->setGeometry(QRect(20, 50, 331, 361));
+        textEdit->setGeometry(QRect(20, 90, 331, 361));
         layoutWidget1 = new QWidget(centralWidget);
         layoutWidget1->setObjectName(QStringLiteral("layoutWidget1"));
-        layoutWidget1->setGeometry(QRect(50, 430, 244, 25));
+        layoutWidget1->setGeometry(QRect(50, 480, 244, 25));
         horizontalLayout_2 = new QHBoxLayout(layoutWidget1);
         horizontalLayout_2->setSpacing(6);
         horizontalLayout_2->setContentsMargins(11, 11, 11, 11);
@@ -103,10 +108,24 @@ public:
 
         horizontalLayout_2->addWidget(clear);
 
+        label_img = new QLabel(centralWidget);
+        label_img->setObjectName(QStringLiteral("label_img"));
+        label_img->setGeometry(QRect(400, 50, 480, 360));
+        label_img->setAlignment(Qt::AlignCenter);
+        label_path = new QLabel(centralWidget);
+        label_path->setObjectName(QStringLiteral("label_path"));
+        label_path->setGeometry(QRect(10, 10, 231, 21));
+        c_path = new QPushButton(centralWidget);
+        c_path->setObjectName(QStringLiteral("c_path"));
+        c_path->setGeometry(QRect(260, 10, 91, 31));
+        label = new QLabel(centralWidget);
+        label->setObjectName(QStringLiteral("label"));
+        label->setGeometry(QRect(600, 440, 341, 91));
+        label->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 400, 23));
+        menuBar->setGeometry(QRect(0, 0, 950, 23));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -127,6 +146,10 @@ public:
         opencom->setText(QApplication::translate("MainWindow", "\346\211\223\345\274\200\344\270\262\345\217\243", Q_NULLPTR));
         pushButton->setText(QApplication::translate("MainWindow", "\347\273\223\346\235\237\346\216\245\346\224\266", Q_NULLPTR));
         clear->setText(QApplication::translate("MainWindow", "\346\270\205\347\251\272", Q_NULLPTR));
+        label_img->setText(QString());
+        label_path->setText(QApplication::translate("MainWindow", "TextLabel", Q_NULLPTR));
+        c_path->setText(QApplication::translate("MainWindow", "\344\277\256\346\224\271\350\267\257\345\276\204", Q_NULLPTR));
+        label->setText(QApplication::translate("MainWindow", "<html><head/><body><p>\346\231\272\350\203\275\350\275\246\350\275\275\347\273\210\347\253\257\345\267\245\345\205\267</p><p>V0.1.2</p><p>[\346\263\242\347\211\271\347\216\207230400bps]</p></body></html>", Q_NULLPTR));
     } // retranslateUi
 
 };
