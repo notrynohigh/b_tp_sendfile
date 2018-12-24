@@ -17,13 +17,13 @@ CXXFLAGS      = -pipe -fno-keep-inline-dllexport -g -std=gnu++11 -frtti -Wall -W
 INCPATH       = -I. -IC:\Qt\Qt5.8.0\5.8\mingw53_32\include -IC:\Qt\Qt5.8.0\5.8\mingw53_32\include\QtWidgets -IC:\Qt\Qt5.8.0\5.8\mingw53_32\include\QtGui -IC:\Qt\Qt5.8.0\5.8\mingw53_32\include\QtANGLE -IC:\Qt\Qt5.8.0\5.8\mingw53_32\include\QtSerialPort -IC:\Qt\Qt5.8.0\5.8\mingw53_32\include\QtCore -Idebug -I. -IC:\Qt\Qt5.8.0\5.8\mingw53_32\mkspecs\win32-g++ 
 LINKER      =        g++
 LFLAGS        =        -Wl,-subsystem,windows -mthreads
-LIBS        =        -lmingw32 -LC:\Qt\Qt5.8.0\5.8\mingw53_32\lib C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\libqtmaind.a -LC:\utils\my_sql\my_sql\lib -LC:\utils\postgresql\pgsql\lib -lshell32 C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\libQt5Widgetsd.a C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\libQt5Guid.a C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\libQt5SerialPortd.a C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\libQt5Cored.a 
+LIBS        =        -lmingw32 -LC:\Qt\Qt5.8.0\5.8\mingw53_32\lib C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\libqtmaind.a -LC:\utils\my_sql\my_sql\lib -LC:\utils\postgresql\pgsql\lib -lshell32 C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\libQt5Widgetsd.a C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\libQt5Guid.a C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\libQt5SerialPortd.a C:\Qt\Qt5.8.0\5.8\mingw53_32\lib\libQt5Cored.a debug\UART_TOOL_resource_res.o 
 QMAKE         = C:\Qt\Qt5.8.0\5.8\mingw53_32\bin\qmake.exe
 IDC           = idc
 IDL           = midl
 ZIP           = zip -r -9
 DEF_FILE      = 
-RES_FILE      = 
+RES_FILE      = debug\UART_TOOL_resource_res.o
 COPY          = copy /y
 SED           = $(QMAKE) -install sed
 COPY_FILE     = copy /y
@@ -82,8 +82,11 @@ DESTDIR_TARGET = debug\UART_TOOL.exe
 first: all
 all: Makefile.Debug  $(DESTDIR_TARGET)
 
-$(DESTDIR_TARGET): ui_mainwindow.h $(OBJECTS) 
+$(DESTDIR_TARGET): ui_mainwindow.h $(OBJECTS) debug/UART_TOOL_resource_res.o
 	$(LINKER) $(LFLAGS) -o $(DESTDIR_TARGET) $(OBJECTS)  $(LIBS)
+
+debug/UART_TOOL_resource_res.o: UART_TOOL_resource.rc
+	windres -i UART_TOOL_resource.rc -o debug\UART_TOOL_resource_res.o --include-dir=. $(DEFINES)
 
 qmake: FORCE
 	@$(QMAKE) -o Makefile.Debug UART_TOOL.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug"
@@ -95,6 +98,7 @@ dist:
 
 clean: compiler_clean 
 	-$(DEL_FILE) debug\main.o debug\mainwindow.o debug\b_tp.o debug\crc16.o debug\b_tp_port.o debug\uartclass.o debug\proto.o debug\moc_mainwindow.o
+	-$(DEL_FILE) debug\UART_TOOL_resource_res.o
 
 distclean: clean 
 	-$(DEL_FILE) .qmake.stash
@@ -509,6 +513,8 @@ debug/mainwindow.o: mainwindow.cpp mainwindow.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/qabstractitemview.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/qabstractscrollarea.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/qitemselectionmodel.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QLabel \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/qlabel.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QMenuBar \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/qmenubar.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/qmenu.h \
@@ -536,7 +542,22 @@ debug/mainwindow.o: mainwindow.cpp mainwindow.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/QFileInfo \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/qfileinfo.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/qthread.h \
-		protocol/proto.h
+		protocol/proto.h \
+		b_tp/inc/b_tp.h \
+		b_tp/b_tp_port/b_tp_config.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/QDir \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/qdir.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/QTime \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/qdatetime.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/qfiledialog.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/qdialog.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtGui/qimagereader.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtGui/qimageiohandler.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/qplugin.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/qpointer.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/qjsonobject.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/qjsonvalue.h \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/qfactoryinterface.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\mainwindow.o mainwindow.cpp
 
 debug/b_tp.o: b_tp/src/b_tp.c b_tp/inc/b_tp.h \
