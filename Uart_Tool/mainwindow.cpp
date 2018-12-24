@@ -297,12 +297,12 @@ void MainWindow::on_c_path_clicked()
     if(name != "" && name != path)
     {
         ui->label_path->setText(name);
+        path = name;
         name.append("\r\n");
         txt_f.open(QFile::ReadWrite);
         txt_f.seek(0);
         txt_f.write(name.toLocal8Bit());
         txt_f.close();
-        path = name;
         dird.setPath(path);
         fl = dird.entryList(QDir::Files);
         j_count = fl.size();
