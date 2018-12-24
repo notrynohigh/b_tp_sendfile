@@ -97,7 +97,8 @@ void MainWindow::show_img()
     {
         len = sprintf(table, "/%03d.jpeg",j_count - 1);
         name = QString::fromStdString(table);
-        path_l = path.append(name);
+        path_l = path;
+        path_l = path_l.append(name);
     }
     else
     {
@@ -148,13 +149,16 @@ void MainWindow::timer_timeout()
                 tim = QTime::currentTime();
                 s_msec = tim.msecsSinceStartOfDay();
 
-                sprintf(name, "%s/%03d.jpeg",path.toLocal8Bit(), j_count);
+                sprintf(name, "/%03d.jpeg",j_count);
                 ui->textEdit->append(name);
-                pf = fopen(name, "wb");
+                QString path_l;
+                path_l = path;
+                path_l = path_l.append(name);
+
+                file_j.setFileName(path_l);
+                file_j.open(QFile::ReadWrite);
                 j_count++;
                 w_file = true;
-                file_j.open(pf, QFile::ReadWrite);
-
             }
         }
         memcpy(buf + f_si, buf_tmp, len);
@@ -302,5 +306,6 @@ void MainWindow::on_c_path_clicked()
         dird.setPath(path);
         fl = dird.entryList(QDir::Files);
         j_count = fl.size();
+        show_img();
     }
 }
