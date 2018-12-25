@@ -89,8 +89,21 @@ MainWindow::MainWindow(QWidget *parent) :
     dird.setPath(path);
     fl = dird.entryList(QDir::Files);
     j_count = fl.size();
-    show_img();
+    show_start_img();
 }
+
+void MainWindow::show_start_img()
+{
+    QString path_l;
+    path_l = "./no_img.png";
+
+    QImageReader reader;
+    QImage img;
+    reader.setFileName(path_l);
+    img = reader.read();
+    ui->label_img->setPixmap(QPixmap::fromImage(img));
+}
+
 
 void MainWindow::show_img()
 {
@@ -130,8 +143,9 @@ void MainWindow::timer_timeout()
     uint32_t i = 0;
 
     char stable[16];
+
     len = uartModule.uartReadBuff(buf_tmp);
-    if(len > 0)
+    if(len > 50)
     {
         tt = 0;
         if(buf_tmp[0] == 0xff && buf_tmp[1] == 0xd8 && buf_tmp[2] == 0xff && buf_tmp[3] == 0xe0 && buf_tmp[4] == 0x00
@@ -174,10 +188,6 @@ void MainWindow::timer_timeout()
             if(w_index == 0xfffff)
                 w_index = f_si;
             f_si += len;
-        }
-        else
-        {
-            uart_parse_command(buf_tmp, len);
         }
     }
     else
@@ -231,7 +241,13 @@ void MainWindow::timer_timeout()
             }
         }
         else
+        {
             tt = 0;
+        }
+        if(len > 0)
+        {
+            uart_parse_command(buf_tmp, len);
+        }
     }
     if(show_len > 0)
     {
@@ -262,7 +278,7 @@ void MainWindow::timer_timeout()
     }
 
 
-    quartTimer->start(100);
+    quartTimer->start(50);
 }
 
 
@@ -300,7 +316,8 @@ void uart_cmd_dispatch(uart_cmd_struct_t uart_cmd_struct)
             battery_mv = puart_battery_mv->mv;
             break;
         case UART_CMD_BREAK:
-            memcpy(&uart_record, puart_record, sizeof(uart_record_t));
+           memcpy(&uart_record, puart_record, sizeof(uart_record_t));
+           //show_len = sprintf(show_table, "%02d-%02d %02d:%02d拆机",uart_record.month, uart_record.day, uart_record.hour, uart_record.minute);
             break;
         default:
         break;

@@ -16,6 +16,7 @@ public:
     ~MainWindow();
     void textShowString(uint8_t *pbuf, uint32_t len);
     void show_img();
+    void show_start_img();
 private slots:
     void on_refresh_com_clicked();
     void timer_timeout();
