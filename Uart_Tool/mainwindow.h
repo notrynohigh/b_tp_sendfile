@@ -29,6 +29,10 @@ private slots:
 
     void on_c_path_clicked();
 
+    void on_readtime_clicked();
+
+    void on_settime_clicked();
+
 private:
     Ui::MainWindow *ui;
     QTimer *quartTimer;

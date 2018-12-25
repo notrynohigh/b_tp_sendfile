@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     b_tp/check/crc16/crc16.c \
     b_tp/b_tp_port/b_tp_port.c \
     uartclass.cpp \
-    protocol/proto.c
+    protocol/proto.c \
+    b_tp/check/sum_8bit/sum_8bit.c
 
 HEADERS  += mainwindow.h \
     b_tp/inc/b_tp.h \
@@ -39,6 +40,7 @@ HEADERS  += mainwindow.h \
     b_tp/b_tp_port/b_tp_config.h \
     b_tp/b_tp_port/b_tp_port.h \
     uartclass.h \
-    protocol/proto.h
+    protocol/proto.h \
+    b_tp/check/sum_8bit/sum_8bit.h
 
 FORMS    += mainwindow.ui

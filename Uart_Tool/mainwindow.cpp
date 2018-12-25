@@ -17,7 +17,7 @@
 uartClass uartModule;
 
 extern "C" void b_tp_port_uart_send(uint8_t *pbuf, uint32_t len);
-extern "C" void b_tp_callback(uint8_t *pbuf, uint32_t len);
+extern "C" void uart_cmd_dispatch(uart_cmd_struct_t uart_cmd_struct);
 
 void b_tp_callback(uint8_t *pbuf, uint32_t len);
 
@@ -117,6 +117,8 @@ void MainWindow::show_img()
 
 uint32_t w_index = 0xfffff;
 uint32_t s_msec = 0;
+char show_table[1024];
+int show_len = 0;
 void MainWindow::timer_timeout()
 {
     int32_t len = 0;
@@ -161,10 +163,17 @@ void MainWindow::timer_timeout()
                 w_file = true;
             }
         }
-        memcpy(buf + f_si, buf_tmp, len);
-        if(w_index == 0xfffff)
-            w_index = f_si;
-        f_si += len;
+        if(w_file)
+        {
+            memcpy(buf + f_si, buf_tmp, len);
+            if(w_index == 0xfffff)
+                w_index = f_si;
+            f_si += len;
+        }
+        else
+        {
+            uart_parse_command(buf_tmp, len);
+        }
     }
     else
     {
@@ -219,6 +228,11 @@ void MainWindow::timer_timeout()
         else
             tt = 0;
     }
+    if(show_len > 0)
+    {
+        ui->textEdit->append(show_table);
+        show_len = 0;
+    }
     quartTimer->start(100);
 }
 
@@ -229,6 +243,9 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+
+
+
 void b_tp_port_uart_send(uint8_t *pbuf, uint32_t len)
 {
     uartModule.uartSendBuff(pbuf, len);
@@ -236,9 +253,19 @@ void b_tp_port_uart_send(uint8_t *pbuf, uint32_t len)
 }
 
 
-void b_tp_callback(uint8_t *pbuf, uint32_t len)
-{
 
+
+
+void uart_cmd_dispatch(uart_cmd_struct_t uart_cmd_struct)
+{
+    switch(uart_cmd_struct.cmd)
+    {
+        case UART_CMD_GET_TIME:
+        uart_time_struct_t *puart_time_struct = (uart_time_struct_t *)uart_cmd_struct.pbuf;
+        show_len = sprintf(show_table, "%02d-%02d-%02d %02d:%02d:%02d", puart_time_struct->year, puart_time_struct->month, puart_time_struct->day, puart_time_struct->hour,
+                puart_time_struct->minute, puart_time_struct->second);
+            break;
+    }
 }
 
 
@@ -308,4 +335,19 @@ void MainWindow::on_c_path_clicked()
         j_count = fl.size();
         show_img();
     }
+}
+
+void MainWindow::on_readtime_clicked()
+{
+    protocol_read_time();
+}
+
+void MainWindow::on_settime_clicked()
+{
+    QTime tim_c;
+    QDate date_c;
+    date_c = QDate::currentDate();
+    tim_c = QTime::currentTime();
+    protocol_set_time(date_c.year(), date_c.month(), date_c.day()
+                      ,tim_c.hour(), tim_c.minute(), tim_c.second());
 }

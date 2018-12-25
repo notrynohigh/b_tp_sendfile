@@ -41,6 +41,8 @@ public:
     QHBoxLayout *horizontalLayout_2;
     QPushButton *pushButton;
     QPushButton *clear;
+    QPushButton *readtime;
+    QPushButton *settime;
     QLabel *label_img;
     QLabel *label_path;
     QPushButton *c_path;
@@ -92,7 +94,7 @@ public:
         textEdit->setGeometry(QRect(20, 90, 331, 361));
         layoutWidget1 = new QWidget(centralWidget);
         layoutWidget1->setObjectName(QStringLiteral("layoutWidget1"));
-        layoutWidget1->setGeometry(QRect(50, 480, 244, 25));
+        layoutWidget1->setGeometry(QRect(20, 470, 320, 25));
         horizontalLayout_2 = new QHBoxLayout(layoutWidget1);
         horizontalLayout_2->setSpacing(6);
         horizontalLayout_2->setContentsMargins(11, 11, 11, 11);
@@ -107,6 +109,16 @@ public:
         clear->setObjectName(QStringLiteral("clear"));
 
         horizontalLayout_2->addWidget(clear);
+
+        readtime = new QPushButton(layoutWidget1);
+        readtime->setObjectName(QStringLiteral("readtime"));
+
+        horizontalLayout_2->addWidget(readtime);
+
+        settime = new QPushButton(layoutWidget1);
+        settime->setObjectName(QStringLiteral("settime"));
+
+        horizontalLayout_2->addWidget(settime);
 
         label_img = new QLabel(centralWidget);
         label_img->setObjectName(QStringLiteral("label_img"));
@@ -146,10 +158,12 @@ public:
         opencom->setText(QApplication::translate("MainWindow", "\346\211\223\345\274\200\344\270\262\345\217\243", Q_NULLPTR));
         pushButton->setText(QApplication::translate("MainWindow", "\347\273\223\346\235\237\346\216\245\346\224\266", Q_NULLPTR));
         clear->setText(QApplication::translate("MainWindow", "\346\270\205\347\251\272", Q_NULLPTR));
+        readtime->setText(QApplication::translate("MainWindow", "\350\257\273\345\217\226\346\227\266\351\227\264", Q_NULLPTR));
+        settime->setText(QApplication::translate("MainWindow", "\350\256\276\347\275\256\346\227\266\351\227\264", Q_NULLPTR));
         label_img->setText(QString());
         label_path->setText(QApplication::translate("MainWindow", "TextLabel", Q_NULLPTR));
         c_path->setText(QApplication::translate("MainWindow", "\344\277\256\346\224\271\350\267\257\345\276\204", Q_NULLPTR));
-        label->setText(QApplication::translate("MainWindow", "<html><head/><body><p>\346\231\272\350\203\275\350\275\246\350\275\275\347\273\210\347\253\257\345\267\245\345\205\267</p><p>V0.1.2</p><p>[\346\263\242\347\211\271\347\216\207230400bps]</p></body></html>", Q_NULLPTR));
+        label->setText(QApplication::translate("MainWindow", "<html><head/><body><p>\346\231\272\350\203\275\350\275\246\350\275\275\347\273\210\347\253\257\345\267\245\345\205\267</p><p>V0.1.3</p><p>[\346\263\242\347\211\271\347\216\207230400bps]</p></body></html>", Q_NULLPTR));
     } // retranslateUi
 
 };
