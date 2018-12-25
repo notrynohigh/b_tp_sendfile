@@ -47,6 +47,8 @@ public:
     QLabel *label_path;
     QPushButton *c_path;
     QLabel *label;
+    QLabel *battery;
+    QLabel *record;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -132,8 +134,14 @@ public:
         c_path->setGeometry(QRect(260, 10, 91, 31));
         label = new QLabel(centralWidget);
         label->setObjectName(QStringLiteral("label"));
-        label->setGeometry(QRect(600, 440, 341, 91));
+        label->setGeometry(QRect(820, 440, 121, 91));
         label->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+        battery = new QLabel(centralWidget);
+        battery->setObjectName(QStringLiteral("battery"));
+        battery->setGeometry(QRect(410, 460, 81, 41));
+        record = new QLabel(centralWidget);
+        record->setObjectName(QStringLiteral("record"));
+        record->setGeometry(QRect(580, 460, 171, 41));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -164,6 +172,8 @@ public:
         label_path->setText(QApplication::translate("MainWindow", "TextLabel", Q_NULLPTR));
         c_path->setText(QApplication::translate("MainWindow", "\344\277\256\346\224\271\350\267\257\345\276\204", Q_NULLPTR));
         label->setText(QApplication::translate("MainWindow", "<html><head/><body><p>\346\231\272\350\203\275\350\275\246\350\275\275\347\273\210\347\253\257\345\267\245\345\205\267</p><p>V0.1.3</p><p>[\346\263\242\347\211\271\347\216\207230400bps]</p></body></html>", Q_NULLPTR));
+        battery->setText(QApplication::translate("MainWindow", "\347\224\265\351\207\217\357\274\232", Q_NULLPTR));
+        record->setText(QApplication::translate("MainWindow", "\346\227\240\346\213\206\346\234\272\350\256\260\345\275\225", Q_NULLPTR));
     } // retranslateUi
 
 };

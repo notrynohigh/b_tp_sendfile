@@ -19,6 +19,11 @@ uartClass uartModule;
 extern "C" void b_tp_port_uart_send(uint8_t *pbuf, uint32_t len);
 extern "C" void uart_cmd_dispatch(uart_cmd_struct_t uart_cmd_struct);
 
+uint16_t battery_mv = 0;
+uart_record_t uart_record = {0, 1, 1 , 2, 3};
+
+
+
 void b_tp_callback(uint8_t *pbuf, uint32_t len);
 
 void MainWindow::textShowString(uint8_t *pbuf, uint32_t len)
@@ -233,6 +238,30 @@ void MainWindow::timer_timeout()
         ui->textEdit->append(show_table);
         show_len = 0;
     }
+    char rtable[64];
+    if(battery_mv > 0)
+    {
+        sprintf(rtable, "电量：%4dmv",battery_mv);
+        ui->battery->setText(rtable);
+        battery_mv = 0;
+    }
+
+    if(uart_record.flag == 1)
+    {
+        sprintf(rtable, "%02d-%02d %02d:%02d拆机",uart_record.month, uart_record.day, uart_record.hour, uart_record.minute);
+        ui->record->setText(rtable);
+        uart_record.flag = 2;
+    }
+    else if(uart_record.flag == 0)
+    {
+        if(ui->record->text() != "无拆机记录")
+        {
+            ui->record->setText("无拆机记录");
+        }
+        uart_record.flag = 2;
+    }
+
+
     quartTimer->start(100);
 }
 
@@ -258,13 +287,23 @@ void b_tp_port_uart_send(uint8_t *pbuf, uint32_t len)
 
 void uart_cmd_dispatch(uart_cmd_struct_t uart_cmd_struct)
 {
+    uart_time_struct_t *puart_time_struct = (uart_time_struct_t *)uart_cmd_struct.pbuf;
+    uart_battery_mv_t *puart_battery_mv = (uart_battery_mv_t *)uart_cmd_struct.pbuf;
+    uart_record_t *puart_record = (uart_record_t *)uart_cmd_struct.pbuf;
     switch(uart_cmd_struct.cmd)
     {
         case UART_CMD_GET_TIME:
-        uart_time_struct_t *puart_time_struct = (uart_time_struct_t *)uart_cmd_struct.pbuf;
         show_len = sprintf(show_table, "%02d-%02d-%02d %02d:%02d:%02d", puart_time_struct->year, puart_time_struct->month, puart_time_struct->day, puart_time_struct->hour,
                 puart_time_struct->minute, puart_time_struct->second);
             break;
+        case UART_CMD_BATTERY:
+            battery_mv = puart_battery_mv->mv;
+            break;
+        case UART_CMD_BREAK:
+            memcpy(&uart_record, puart_record, sizeof(uart_record_t));
+            break;
+        default:
+        break;
     }
 }
 

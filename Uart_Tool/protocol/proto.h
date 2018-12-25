@@ -13,8 +13,8 @@ extern "C" {
 
 #define UART_CMD_SET_TIME      0X55
 #define UART_CMD_GET_TIME      0X56
-
-
+#define UART_CMD_BATTERY       0X57
+#define UART_CMD_BREAK         0X58
 
 #pragma pack(1)
 
@@ -61,6 +61,21 @@ typedef struct
     uint8_t second;
 }uart_time_struct_t;
 
+
+
+typedef struct
+{
+    uint16_t mv;
+}uart_battery_mv_t;
+
+typedef struct
+{
+    uint8_t flag;
+    uint8_t month;
+    uint8_t day;
+    uint8_t hour;
+    uint8_t minute;
+}uart_record_t;
 
 
 #pragma pack()
