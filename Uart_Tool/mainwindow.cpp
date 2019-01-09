@@ -157,19 +157,22 @@ void MainWindow::timer_timeout()
                 file_j.close();
                 w_file = false;
                 f_si = 0;
+                w_index = 0xfffff;
 
                 tim = QTime::currentTime();
                 s_msec = tim.msecsSinceStartOfDay() - s_msec;
                 ui->textEdit->append("jpeg ok");
                 sprintf(stable, ":%dms\r\n", s_msec);
                 ui->textEdit->append(stable);
-                show_img();
+                show_img(); 
             }
             if(!w_file)
             {
                 tim = QTime::currentTime();
                 s_msec = tim.msecsSinceStartOfDay();
-
+                char timtable[64];
+                sprintf(timtable, "%d:%d:%d %d", tim.hour(),tim.minute(),tim.second(),tim.msec());
+                ui->textEdit->append(timtable);
                 sprintf(name, "/%03d.jpeg",j_count);
                 ui->textEdit->append(name);
                 QString path_l;
@@ -180,6 +183,8 @@ void MainWindow::timer_timeout()
                 file_j.open(QFile::ReadWrite);
                 j_count++;
                 w_file = true;
+                f_si = 0;
+                w_index = 0xfffff;
             }
         }
         if(w_file)
@@ -188,7 +193,28 @@ void MainWindow::timer_timeout()
             if(w_index == 0xfffff)
                 w_index = f_si;
             f_si += len;
-        }
+
+            for(i = 0;(i < f_si && i < 55);i++)
+            {
+                if(buf[f_si - 1 - i] == 0xd9)
+                {
+                    if(buf[f_si - 1 - i - 1] == 0xff)
+                    {
+                        f_si -= i;
+                        file_j.write((const char *)buf, f_si);
+                        file_j.close();
+                        w_file = false;
+                        f_si = 0;
+                        tim = QTime::currentTime();
+                        s_msec = tim.msecsSinceStartOfDay() - s_msec;
+                        ui->textEdit->append("jpeg ok");
+                        sprintf(stable, ":%dms\r\n", s_msec);
+                        ui->textEdit->append(stable);
+                        show_img();
+                    }
+                }
+            }
+         }
     }
     else
     {
@@ -212,28 +238,7 @@ void MainWindow::timer_timeout()
             }
             else
             {
-                for(i = 0;(i < f_si && i < 55);i++)
-                {
-                    if(buf[f_si - 1 - i] == 0xd9)
-                    {
-                        if(buf[f_si - 1 - i - 1] == 0xff)
-                        {
-                            f_si -= i;
-                            file_j.write((const char *)buf, f_si);
-                            file_j.close();
-                            w_file = false;
-                            f_si = 0;
-                            tim = QTime::currentTime();
-                            s_msec = tim.msecsSinceStartOfDay() - s_msec;
-                            ui->textEdit->append("jpeg ok");
-                            sprintf(stable, ":%dms\r\n", s_msec);
-                            ui->textEdit->append(stable);
-                            show_img();
-                        }
-                    }
-                }
-
-                if(w_file && tt > 50 && w_index != 0xfffff)
+                if(w_file && tt > 10 && w_index != 0xfffff)
                 {
                     f_si = w_index;
                     w_index = 0xfffff;
