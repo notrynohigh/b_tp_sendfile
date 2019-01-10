@@ -94,6 +94,7 @@ MainWindow::MainWindow(QWidget *parent) :
     fl = dird.entryList(QDir::Files);
     j_count = fl.size();
     show_start_img();
+    show_start_img2();
     //ui->label_img->setScaledContents(true);
     manager = new QNetworkAccessManager(this);
     connect(manager,QNetworkAccessManager::finished, this, replyFinished);
@@ -165,12 +166,14 @@ void MainWindow::replyFinished(QNetworkReply *reply)
         else
         {
             ui->search_result->setText("未匹配成功~~~~(>_<)~~~~");
+            show_start_img2();
         }
 
     }
     else
     {
         ui->search_result->setText("未匹配成功~~~~(>_<)~~~~");
+        show_start_img2();
     }
 
 }
@@ -185,7 +188,7 @@ void MainWindow::show_img_l(QString path)
     QImage img;
     reader.setFileName(path_l);
     img = reader.read();
-    ui->label_img->setPixmap(QPixmap::fromImage(img));
+    ui->label_img_2->setPixmap(QPixmap::fromImage(img));
 }
 
 
@@ -202,6 +205,17 @@ void MainWindow::show_start_img()
     ui->label_img->setPixmap(QPixmap::fromImage(img));
 }
 
+void MainWindow::show_start_img2()
+{
+    QString path_l;
+    path_l = "./no_img.png";
+
+    QImageReader reader;
+    QImage img;
+    reader.setFileName(path_l);
+    img = reader.read();
+    ui->label_img_2->setPixmap(QPixmap::fromImage(img));
+}
 
 void MainWindow::show_img()
 {

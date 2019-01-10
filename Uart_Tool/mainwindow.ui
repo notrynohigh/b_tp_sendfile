@@ -6,20 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>950</width>
-    <height>600</height>
+    <width>1040</width>
+    <height>750</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>950</width>
-    <height>600</height>
+    <width>1040</width>
+    <height>750</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>950</width>
-    <height>600</height>
+    <width>1040</width>
+    <height>750</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -28,21 +28,21 @@
   <property name="styleSheet">
    <string notr="true">QMainWindow
 {
-	background-color: rgb(156, 156, 156);
+	background-color: rgb(158, 158, 78);
 }
 
 QTextEdit
 {
-	background-color: rgb(156, 156, 156);
+	background-color: rgb(158, 158, 78);
 }
 
 QLabel
 {
-	background-color: rgb(156, 156, 156);
+	background-color: rgb(158, 158, 78);
 }
 
 QPushButton{
-     background-color: rgb(156, 156, 156);/*背景色*/
+     background-color: rgb(158, 158, 78);/*背景色*/
      color: rgb(0, 0, 0);
 }
 
@@ -53,7 +53,7 @@ QPushButton:pressed { /*按钮被按下时*/
 
 QComboBox
 {
-	background-color: rgb(156, 156, 156);
+	background-color: rgb(158, 158, 78);
 }</string>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -62,56 +62,16 @@ QComboBox
      <rect>
       <x>20</x>
       <y>100</y>
-      <width>331</width>
-      <height>391</height>
+      <width>481</width>
+      <height>181</height>
      </rect>
     </property>
-   </widget>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>500</y>
-      <width>320</width>
-      <height>36</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QPushButton" name="pushButton">
-       <property name="text">
-        <string>结束接收</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="clear">
-       <property name="text">
-        <string>清空</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="readtime">
-       <property name="text">
-        <string>读取时间</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="settime">
-       <property name="text">
-        <string>设置时间</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
    </widget>
    <widget class="QLabel" name="label_img">
     <property name="geometry">
      <rect>
-      <x>400</x>
-      <y>50</y>
+      <x>20</x>
+      <y>300</y>
       <width>480</width>
       <height>360</height>
      </rect>
@@ -126,10 +86,10 @@ QComboBox
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>30</x>
       <y>10</y>
-      <width>331</width>
-      <height>81</height>
+      <width>471</width>
+      <height>74</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -180,50 +140,118 @@ QComboBox
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QLabel" name="label_img_2">
     <property name="geometry">
      <rect>
-      <x>400</x>
-      <y>430</y>
-      <width>481</width>
-      <height>106</height>
+      <x>540</x>
+      <y>300</y>
+      <width>480</width>
+      <height>360</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QDial" name="dial">
+    <property name="geometry">
+     <rect>
+      <x>730</x>
+      <y>60</y>
+      <width>151</width>
+      <height>121</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>800</x>
+      <y>0</y>
+      <width>240</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;智能车载终端工具V0.2.1 [波特率230400bps]&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>520</x>
+      <y>100</y>
+      <width>77</width>
+      <height>181</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="QPushButton" name="clear">
+       <property name="text">
+        <string>清空</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton">
+       <property name="text">
+        <string>结束接收</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="readtime">
+       <property name="text">
+        <string>读取时间</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="settime">
+       <property name="text">
+        <string>设置时间</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>780</x>
+      <y>230</y>
+      <width>231</width>
+      <height>52</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_3">
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="QLabel" name="search_result">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="record">
-         <property name="text">
-          <string>无拆机记录</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="battery">
-         <property name="text">
-          <string>电量：</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;智能车载终端工具V0.2.1 [波特率230400bps]&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      <widget class="QLabel" name="search_result">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="record">
+       <property name="text">
+        <string>无拆机记录</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="battery">
+       <property name="text">
+        <string>电量：</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>
@@ -233,7 +261,7 @@ QComboBox
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>950</width>
+     <width>1040</width>
      <height>23</height>
     </rect>
    </property>

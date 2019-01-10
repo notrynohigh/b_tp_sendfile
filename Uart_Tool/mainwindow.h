@@ -21,6 +21,7 @@ public:
     void textShowString(uint8_t *pbuf, uint32_t len);
     void show_img();
     void show_start_img();
+    void show_start_img2();
     void post_search(QByteArray &data);
     void show_img_l(QString path);
 private slots:

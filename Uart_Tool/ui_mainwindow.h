@@ -14,6 +14,7 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QComboBox>
+#include <QtWidgets/QDial>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
@@ -33,14 +34,8 @@ class Ui_MainWindow
 public:
     QWidget *centralWidget;
     QTextEdit *textEdit;
-    QWidget *layoutWidget;
-    QHBoxLayout *horizontalLayout_2;
-    QPushButton *pushButton;
-    QPushButton *clear;
-    QPushButton *readtime;
-    QPushButton *settime;
     QLabel *label_img;
-    QWidget *layoutWidget1;
+    QWidget *layoutWidget;
     QVBoxLayout *verticalLayout;
     QLabel *label_path;
     QPushButton *c_path;
@@ -48,13 +43,20 @@ public:
     QPushButton *refresh_com;
     QComboBox *COMx;
     QPushButton *opencom;
-    QWidget *layoutWidget2;
-    QVBoxLayout *verticalLayout_3;
+    QLabel *label_img_2;
+    QDial *dial;
+    QLabel *label;
+    QWidget *widget;
     QVBoxLayout *verticalLayout_2;
+    QPushButton *clear;
+    QPushButton *pushButton;
+    QPushButton *readtime;
+    QPushButton *settime;
+    QWidget *widget1;
+    QVBoxLayout *verticalLayout_3;
     QLabel *search_result;
     QLabel *record;
     QLabel *battery;
-    QLabel *label;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -63,26 +65,26 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(950, 600);
-        MainWindow->setMinimumSize(QSize(950, 600));
-        MainWindow->setMaximumSize(QSize(950, 600));
+        MainWindow->resize(1040, 750);
+        MainWindow->setMinimumSize(QSize(1040, 750));
+        MainWindow->setMaximumSize(QSize(1040, 750));
         MainWindow->setStyleSheet(QString::fromUtf8("QMainWindow\n"
 "{\n"
-"	background-color: rgb(156, 156, 156);\n"
+"	background-color: rgb(158, 158, 78);\n"
 "}\n"
 "\n"
 "QTextEdit\n"
 "{\n"
-"	background-color: rgb(156, 156, 156);\n"
+"	background-color: rgb(158, 158, 78);\n"
 "}\n"
 "\n"
 "QLabel\n"
 "{\n"
-"	background-color: rgb(156, 156, 156);\n"
+"	background-color: rgb(158, 158, 78);\n"
 "}\n"
 "\n"
 "QPushButton{\n"
-"     background-color: rgb(156, 156, 156);/*\350\203\214\346\231\257\350\211\262*/\n"
+"     background-color: rgb(158, 158, 78);/*\350\203\214\346\231\257\350\211\262*/\n"
 "     color: rgb(0, 0, 0);\n"
 "}\n"
 "\n"
@@ -93,59 +95,31 @@ public:
 "\n"
 "QComboBox\n"
 "{\n"
-"	background-color: rgb(156, 156, 156);\n"
+"	background-color: rgb(158, 158, 78);\n"
 "}"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         textEdit = new QTextEdit(centralWidget);
         textEdit->setObjectName(QStringLiteral("textEdit"));
-        textEdit->setGeometry(QRect(20, 100, 331, 391));
-        layoutWidget = new QWidget(centralWidget);
-        layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
-        layoutWidget->setGeometry(QRect(20, 500, 320, 36));
-        horizontalLayout_2 = new QHBoxLayout(layoutWidget);
-        horizontalLayout_2->setSpacing(6);
-        horizontalLayout_2->setContentsMargins(11, 11, 11, 11);
-        horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
-        horizontalLayout_2->setContentsMargins(0, 0, 0, 0);
-        pushButton = new QPushButton(layoutWidget);
-        pushButton->setObjectName(QStringLiteral("pushButton"));
-
-        horizontalLayout_2->addWidget(pushButton);
-
-        clear = new QPushButton(layoutWidget);
-        clear->setObjectName(QStringLiteral("clear"));
-
-        horizontalLayout_2->addWidget(clear);
-
-        readtime = new QPushButton(layoutWidget);
-        readtime->setObjectName(QStringLiteral("readtime"));
-
-        horizontalLayout_2->addWidget(readtime);
-
-        settime = new QPushButton(layoutWidget);
-        settime->setObjectName(QStringLiteral("settime"));
-
-        horizontalLayout_2->addWidget(settime);
-
+        textEdit->setGeometry(QRect(20, 100, 481, 181));
         label_img = new QLabel(centralWidget);
         label_img->setObjectName(QStringLiteral("label_img"));
-        label_img->setGeometry(QRect(400, 50, 480, 360));
+        label_img->setGeometry(QRect(20, 300, 480, 360));
         label_img->setAlignment(Qt::AlignCenter);
-        layoutWidget1 = new QWidget(centralWidget);
-        layoutWidget1->setObjectName(QStringLiteral("layoutWidget1"));
-        layoutWidget1->setGeometry(QRect(20, 10, 331, 81));
-        verticalLayout = new QVBoxLayout(layoutWidget1);
+        layoutWidget = new QWidget(centralWidget);
+        layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
+        layoutWidget->setGeometry(QRect(30, 10, 471, 74));
+        verticalLayout = new QVBoxLayout(layoutWidget);
         verticalLayout->setSpacing(6);
         verticalLayout->setContentsMargins(11, 11, 11, 11);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
         verticalLayout->setContentsMargins(0, 0, 0, 0);
-        label_path = new QLabel(layoutWidget1);
+        label_path = new QLabel(layoutWidget);
         label_path->setObjectName(QStringLiteral("label_path"));
 
         verticalLayout->addWidget(label_path);
 
-        c_path = new QPushButton(layoutWidget1);
+        c_path = new QPushButton(layoutWidget);
         c_path->setObjectName(QStringLiteral("c_path"));
 
         verticalLayout->addWidget(c_path);
@@ -153,7 +127,7 @@ public:
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setSpacing(6);
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
-        refresh_com = new QPushButton(layoutWidget1);
+        refresh_com = new QPushButton(layoutWidget);
         refresh_com->setObjectName(QStringLiteral("refresh_com"));
         QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
         sizePolicy.setHorizontalStretch(0);
@@ -163,13 +137,13 @@ public:
 
         horizontalLayout->addWidget(refresh_com);
 
-        COMx = new QComboBox(layoutWidget1);
+        COMx = new QComboBox(layoutWidget);
         COMx->setObjectName(QStringLiteral("COMx"));
         COMx->setEnabled(true);
 
         horizontalLayout->addWidget(COMx);
 
-        opencom = new QPushButton(layoutWidget1);
+        opencom = new QPushButton(layoutWidget);
         opencom->setObjectName(QStringLiteral("opencom"));
 
         horizontalLayout->addWidget(opencom);
@@ -177,45 +151,72 @@ public:
 
         verticalLayout->addLayout(horizontalLayout);
 
-        layoutWidget2 = new QWidget(centralWidget);
-        layoutWidget2->setObjectName(QStringLiteral("layoutWidget2"));
-        layoutWidget2->setGeometry(QRect(400, 430, 481, 106));
-        verticalLayout_3 = new QVBoxLayout(layoutWidget2);
+        label_img_2 = new QLabel(centralWidget);
+        label_img_2->setObjectName(QStringLiteral("label_img_2"));
+        label_img_2->setGeometry(QRect(540, 300, 480, 360));
+        label_img_2->setAlignment(Qt::AlignCenter);
+        dial = new QDial(centralWidget);
+        dial->setObjectName(QStringLiteral("dial"));
+        dial->setGeometry(QRect(730, 60, 151, 121));
+        label = new QLabel(centralWidget);
+        label->setObjectName(QStringLiteral("label"));
+        label->setGeometry(QRect(800, 0, 240, 16));
+        label->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+        widget = new QWidget(centralWidget);
+        widget->setObjectName(QStringLiteral("widget"));
+        widget->setGeometry(QRect(520, 100, 77, 181));
+        verticalLayout_2 = new QVBoxLayout(widget);
+        verticalLayout_2->setSpacing(6);
+        verticalLayout_2->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
+        verticalLayout_2->setContentsMargins(0, 0, 0, 0);
+        clear = new QPushButton(widget);
+        clear->setObjectName(QStringLiteral("clear"));
+
+        verticalLayout_2->addWidget(clear);
+
+        pushButton = new QPushButton(widget);
+        pushButton->setObjectName(QStringLiteral("pushButton"));
+
+        verticalLayout_2->addWidget(pushButton);
+
+        readtime = new QPushButton(widget);
+        readtime->setObjectName(QStringLiteral("readtime"));
+
+        verticalLayout_2->addWidget(readtime);
+
+        settime = new QPushButton(widget);
+        settime->setObjectName(QStringLiteral("settime"));
+
+        verticalLayout_2->addWidget(settime);
+
+        widget1 = new QWidget(centralWidget);
+        widget1->setObjectName(QStringLiteral("widget1"));
+        widget1->setGeometry(QRect(780, 230, 231, 52));
+        verticalLayout_3 = new QVBoxLayout(widget1);
         verticalLayout_3->setSpacing(6);
         verticalLayout_3->setContentsMargins(11, 11, 11, 11);
         verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
         verticalLayout_3->setContentsMargins(0, 0, 0, 0);
-        verticalLayout_2 = new QVBoxLayout();
-        verticalLayout_2->setSpacing(6);
-        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
-        search_result = new QLabel(layoutWidget2);
+        search_result = new QLabel(widget1);
         search_result->setObjectName(QStringLiteral("search_result"));
 
-        verticalLayout_2->addWidget(search_result);
+        verticalLayout_3->addWidget(search_result);
 
-        record = new QLabel(layoutWidget2);
+        record = new QLabel(widget1);
         record->setObjectName(QStringLiteral("record"));
 
-        verticalLayout_2->addWidget(record);
+        verticalLayout_3->addWidget(record);
 
-        battery = new QLabel(layoutWidget2);
+        battery = new QLabel(widget1);
         battery->setObjectName(QStringLiteral("battery"));
 
-        verticalLayout_2->addWidget(battery);
-
-        label = new QLabel(layoutWidget2);
-        label->setObjectName(QStringLiteral("label"));
-        label->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-
-        verticalLayout_2->addWidget(label);
-
-
-        verticalLayout_3->addLayout(verticalLayout_2);
+        verticalLayout_3->addWidget(battery);
 
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 950, 23));
+        menuBar->setGeometry(QRect(0, 0, 1040, 23));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -233,19 +234,20 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "JPEG", Q_NULLPTR));
-        pushButton->setText(QApplication::translate("MainWindow", "\347\273\223\346\235\237\346\216\245\346\224\266", Q_NULLPTR));
-        clear->setText(QApplication::translate("MainWindow", "\346\270\205\347\251\272", Q_NULLPTR));
-        readtime->setText(QApplication::translate("MainWindow", "\350\257\273\345\217\226\346\227\266\351\227\264", Q_NULLPTR));
-        settime->setText(QApplication::translate("MainWindow", "\350\256\276\347\275\256\346\227\266\351\227\264", Q_NULLPTR));
         label_img->setText(QString());
         label_path->setText(QApplication::translate("MainWindow", "TextLabel", Q_NULLPTR));
         c_path->setText(QApplication::translate("MainWindow", "\344\277\256\346\224\271\350\267\257\345\276\204", Q_NULLPTR));
         refresh_com->setText(QApplication::translate("MainWindow", "\345\210\267\346\226\260\347\253\257\345\217\243", Q_NULLPTR));
         opencom->setText(QApplication::translate("MainWindow", "\346\211\223\345\274\200\344\270\262\345\217\243", Q_NULLPTR));
+        label_img_2->setText(QString());
+        label->setText(QApplication::translate("MainWindow", "<html><head/><body><p>\346\231\272\350\203\275\350\275\246\350\275\275\347\273\210\347\253\257\345\267\245\345\205\267V0.2.1 [\346\263\242\347\211\271\347\216\207230400bps]</p></body></html>", Q_NULLPTR));
+        clear->setText(QApplication::translate("MainWindow", "\346\270\205\347\251\272", Q_NULLPTR));
+        pushButton->setText(QApplication::translate("MainWindow", "\347\273\223\346\235\237\346\216\245\346\224\266", Q_NULLPTR));
+        readtime->setText(QApplication::translate("MainWindow", "\350\257\273\345\217\226\346\227\266\351\227\264", Q_NULLPTR));
+        settime->setText(QApplication::translate("MainWindow", "\350\256\276\347\275\256\346\227\266\351\227\264", Q_NULLPTR));
         search_result->setText(QString());
         record->setText(QApplication::translate("MainWindow", "\346\227\240\346\213\206\346\234\272\350\256\260\345\275\225", Q_NULLPTR));
         battery->setText(QApplication::translate("MainWindow", "\347\224\265\351\207\217\357\274\232", Q_NULLPTR));
-        label->setText(QApplication::translate("MainWindow", "<html><head/><body><p>\346\231\272\350\203\275\350\275\246\350\275\275\347\273\210\347\253\257\345\267\245\345\205\267V0.2.1 [\346\263\242\347\211\271\347\216\207230400bps]</p></body></html>", Q_NULLPTR));
     } // retranslateUi
 
 };
