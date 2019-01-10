@@ -40,7 +40,7 @@ public:
     QPushButton *readtime;
     QPushButton *settime;
     QLabel *label_img;
-    QWidget *widget;
+    QWidget *layoutWidget1;
     QVBoxLayout *verticalLayout;
     QLabel *label_path;
     QPushButton *c_path;
@@ -48,9 +48,10 @@ public:
     QPushButton *refresh_com;
     QComboBox *COMx;
     QPushButton *opencom;
-    QWidget *widget1;
+    QWidget *layoutWidget2;
     QVBoxLayout *verticalLayout_3;
     QVBoxLayout *verticalLayout_2;
+    QLabel *search_result;
     QLabel *record;
     QLabel *battery;
     QLabel *label;
@@ -131,20 +132,20 @@ public:
         label_img->setObjectName(QStringLiteral("label_img"));
         label_img->setGeometry(QRect(400, 50, 480, 360));
         label_img->setAlignment(Qt::AlignCenter);
-        widget = new QWidget(centralWidget);
-        widget->setObjectName(QStringLiteral("widget"));
-        widget->setGeometry(QRect(20, 10, 331, 81));
-        verticalLayout = new QVBoxLayout(widget);
+        layoutWidget1 = new QWidget(centralWidget);
+        layoutWidget1->setObjectName(QStringLiteral("layoutWidget1"));
+        layoutWidget1->setGeometry(QRect(20, 10, 331, 81));
+        verticalLayout = new QVBoxLayout(layoutWidget1);
         verticalLayout->setSpacing(6);
         verticalLayout->setContentsMargins(11, 11, 11, 11);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
         verticalLayout->setContentsMargins(0, 0, 0, 0);
-        label_path = new QLabel(widget);
+        label_path = new QLabel(layoutWidget1);
         label_path->setObjectName(QStringLiteral("label_path"));
 
         verticalLayout->addWidget(label_path);
 
-        c_path = new QPushButton(widget);
+        c_path = new QPushButton(layoutWidget1);
         c_path->setObjectName(QStringLiteral("c_path"));
 
         verticalLayout->addWidget(c_path);
@@ -152,7 +153,7 @@ public:
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setSpacing(6);
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
-        refresh_com = new QPushButton(widget);
+        refresh_com = new QPushButton(layoutWidget1);
         refresh_com->setObjectName(QStringLiteral("refresh_com"));
         QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
         sizePolicy.setHorizontalStretch(0);
@@ -162,13 +163,13 @@ public:
 
         horizontalLayout->addWidget(refresh_com);
 
-        COMx = new QComboBox(widget);
+        COMx = new QComboBox(layoutWidget1);
         COMx->setObjectName(QStringLiteral("COMx"));
         COMx->setEnabled(true);
 
         horizontalLayout->addWidget(COMx);
 
-        opencom = new QPushButton(widget);
+        opencom = new QPushButton(layoutWidget1);
         opencom->setObjectName(QStringLiteral("opencom"));
 
         horizontalLayout->addWidget(opencom);
@@ -176,10 +177,10 @@ public:
 
         verticalLayout->addLayout(horizontalLayout);
 
-        widget1 = new QWidget(centralWidget);
-        widget1->setObjectName(QStringLiteral("widget1"));
-        widget1->setGeometry(QRect(400, 430, 481, 106));
-        verticalLayout_3 = new QVBoxLayout(widget1);
+        layoutWidget2 = new QWidget(centralWidget);
+        layoutWidget2->setObjectName(QStringLiteral("layoutWidget2"));
+        layoutWidget2->setGeometry(QRect(400, 430, 481, 106));
+        verticalLayout_3 = new QVBoxLayout(layoutWidget2);
         verticalLayout_3->setSpacing(6);
         verticalLayout_3->setContentsMargins(11, 11, 11, 11);
         verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
@@ -187,17 +188,22 @@ public:
         verticalLayout_2 = new QVBoxLayout();
         verticalLayout_2->setSpacing(6);
         verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
-        record = new QLabel(widget1);
+        search_result = new QLabel(layoutWidget2);
+        search_result->setObjectName(QStringLiteral("search_result"));
+
+        verticalLayout_2->addWidget(search_result);
+
+        record = new QLabel(layoutWidget2);
         record->setObjectName(QStringLiteral("record"));
 
         verticalLayout_2->addWidget(record);
 
-        battery = new QLabel(widget1);
+        battery = new QLabel(layoutWidget2);
         battery->setObjectName(QStringLiteral("battery"));
 
         verticalLayout_2->addWidget(battery);
 
-        label = new QLabel(widget1);
+        label = new QLabel(layoutWidget2);
         label->setObjectName(QStringLiteral("label"));
         label->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
@@ -236,9 +242,10 @@ public:
         c_path->setText(QApplication::translate("MainWindow", "\344\277\256\346\224\271\350\267\257\345\276\204", Q_NULLPTR));
         refresh_com->setText(QApplication::translate("MainWindow", "\345\210\267\346\226\260\347\253\257\345\217\243", Q_NULLPTR));
         opencom->setText(QApplication::translate("MainWindow", "\346\211\223\345\274\200\344\270\262\345\217\243", Q_NULLPTR));
+        search_result->setText(QString());
         record->setText(QApplication::translate("MainWindow", "\346\227\240\346\213\206\346\234\272\350\256\260\345\275\225", Q_NULLPTR));
         battery->setText(QApplication::translate("MainWindow", "\347\224\265\351\207\217\357\274\232", Q_NULLPTR));
-        label->setText(QApplication::translate("MainWindow", "<html><head/><body><p>\346\231\272\350\203\275\350\275\246\350\275\275\347\273\210\347\253\257\345\267\245\345\205\267V0.1.3 [\346\263\242\347\211\271\347\216\207230400bps]</p></body></html>", Q_NULLPTR));
+        label->setText(QApplication::translate("MainWindow", "<html><head/><body><p>\346\231\272\350\203\275\350\275\246\350\275\275\347\273\210\347\253\257\345\267\245\345\205\267V0.2.1 [\346\263\242\347\211\271\347\216\207230400bps]</p></body></html>", Q_NULLPTR));
     } // retranslateUi
 
 };

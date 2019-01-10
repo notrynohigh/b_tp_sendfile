@@ -3,6 +3,10 @@
 
 #include <QMainWindow>
 
+
+class QNetworkReply;
+class QNetworkAccessManager;
+
 namespace Ui {
 class MainWindow;
 }
@@ -17,6 +21,8 @@ public:
     void textShowString(uint8_t *pbuf, uint32_t len);
     void show_img();
     void show_start_img();
+    void post_search(QByteArray &data);
+    void show_img_l(QString path);
 private slots:
     void on_refresh_com_clicked();
     void timer_timeout();
@@ -33,10 +39,11 @@ private slots:
     void on_readtime_clicked();
 
     void on_settime_clicked();
-
+    void replyFinished(QNetworkReply *);
 private:
     Ui::MainWindow *ui;
     QTimer *quartTimer;
+    QNetworkAccessManager *manager;
 };
 
 #endif // MAINWINDOW_H

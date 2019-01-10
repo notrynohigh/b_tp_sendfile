@@ -13,6 +13,7 @@
 #include "qimagereader.h"
 #include "qpixmap.h"
 
+#include "QtNetwork"
 
 uartClass uartModule;
 
@@ -22,6 +23,8 @@ extern "C" void uart_cmd_dispatch(uart_cmd_struct_t uart_cmd_struct);
 uint16_t battery_mv = 0;
 uart_record_t uart_record = {0, 1, 1 , 2, 3};
 
+
+QMap<QString, QString> m_map;
 
 
 void b_tp_callback(uint8_t *pbuf, uint32_t len);
@@ -47,6 +50,7 @@ QTime tim;
 QStringList fl;
 QString path;
 QFile txt_f;
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -90,7 +94,101 @@ MainWindow::MainWindow(QWidget *parent) :
     fl = dird.entryList(QDir::Files);
     j_count = fl.size();
     show_start_img();
+    //ui->label_img->setScaledContents(true);
+    manager = new QNetworkAccessManager(this);
+    connect(manager,QNetworkAccessManager::finished, this, replyFinished);
+
+    m_map.insert("e255376edce928657f06f5b9753225d4", "sub_1.jpg");
+    m_map.insert("bbfd00a1f794cd1fc9f304b7d0777bf8", "sub_2.jpg");
+    m_map.insert("061cb7f6da8ccf6a870343a1568edb31", "sub_3.jpg");
+    m_map.insert("99e814cae2f673923b4417a181983b22", "sub_4.jpg");
+    m_map.insert("793eeacdcb84331cf2c232a665903482", "sub_5.jpg");
+    m_map.insert("48be414d747aec95d1c252abafd54d86", "sub_6.jpg");
+    m_map.insert("7d5b234352e73fe05e0a1e610145ee5e", "sub_7.jpg");
+    m_map.insert("c4cc52fb124057d0573fbd2ad0cee051", "sub_8.jpg");
+
 }
+
+
+void MainWindow::post_search(QByteArray &data)
+{
+    QUrl url;
+    url.setUrl("https://api-cn.faceplusplus.com/facepp/v3/search");
+    QNetworkRequest request;
+    request.setUrl(url);
+
+    QHttpMultiPart *multpart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
+    /**KEY*/
+    QHttpPart part;
+    part.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data;name=\"api_key\""));
+    part.setBody("deWn4DAEuE-y9EbZ4Q73FZMioyiQC46g");
+    multpart->append(part);
+
+    /**secret*/
+    part.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data;name=\"api_secret\""));
+    part.setBody("38drPhQ0OjpOgybOVE-81kJn-DeizdFZ");
+    multpart->append(part);
+
+    QHttpPart img_part;
+    /**image_url1*/
+    img_part.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data;name=\"image_file\";filename=\"1\""));
+    img_part.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/octet-stream"));
+    img_part.setBody(data);
+    multpart->append(img_part);
+
+    /**token*/
+    part.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data;name=\"faceset_token\""));
+    part.setBody("698a44cfe95d476acdf1f3f89c1e8ce7");
+    multpart->append(part);
+
+    manager->post(request, multpart);
+}
+
+
+void MainWindow::replyFinished(QNetworkReply *reply)
+{
+    QString all = reply->readAll();
+    int index = 0;
+    reply->deleteLater();
+    index = all.lastIndexOf("face_token");
+    if(index >= 0)
+    {
+        QString res;
+        res = all.mid(index + strlen("face_token") + 4, 32);
+        ui->search_result->setText(res);
+
+        if(m_map.contains(res))
+        {
+            ui->search_result->setText("匹配成功 o(∩_∩)o 哈哈");
+            show_img_l(m_map.value(res));
+        }
+        else
+        {
+            ui->search_result->setText("未匹配成功~~~~(>_<)~~~~");
+        }
+
+    }
+    else
+    {
+        ui->search_result->setText("未匹配成功~~~~(>_<)~~~~");
+    }
+
+}
+
+
+void MainWindow::show_img_l(QString path)
+{
+    QString path_l;
+    path_l = "./img/";
+    path_l.append(path);
+    QImageReader reader;
+    QImage img;
+    reader.setFileName(path_l);
+    img = reader.read();
+    ui->label_img->setPixmap(QPixmap::fromImage(img));
+}
+
+
 
 void MainWindow::show_start_img()
 {
@@ -111,6 +209,8 @@ void MainWindow::show_img()
     int len;
     QString name;
     QString path_l;
+    QFile file_r;
+    QByteArray data;
     if(j_count > 0)
     {
         len = sprintf(table, "/%03d.jpeg",j_count - 1);
@@ -125,10 +225,18 @@ void MainWindow::show_img()
 
     QImageReader reader;
     QImage img;
-
     reader.setFileName(path_l);
     img = reader.read();
     ui->label_img->setPixmap(QPixmap::fromImage(img));
+
+    file_r.setFileName(path_l);
+    if(file_r.open(QFile::ReadWrite))
+    {
+        data = file_r.readAll();
+        file_r.close();
+        post_search(data);
+    }
+
 }
 
 
