@@ -23,6 +23,8 @@ public:
     void show_start_img();
     void show_start_img2();
     void post_search(QByteArray &data);
+    void post_detect(QByteArray &data);
+    void post_add(QString &token);
     void show_img_l(QString path);
 private slots:
     void on_refresh_com_clicked();
@@ -45,6 +47,7 @@ private:
     Ui::MainWindow *ui;
     QTimer *quartTimer;
     QNetworkAccessManager *manager;
+    uint8_t post_state;
 };
 
 #endif // MAINWINDOW_H

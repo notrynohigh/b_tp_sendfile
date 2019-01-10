@@ -14,6 +14,10 @@
 #include "qpixmap.h"
 
 #include "QtNetwork"
+#include "QMessageBox"
+
+#include "QXmlStreamReader"
+#include "QXmlStreamWriter"
 
 uartClass uartModule;
 
@@ -50,7 +54,8 @@ QTime tim;
 QStringList fl;
 QString path;
 QFile txt_f;
-
+QByteArray face_pp_data;
+uint32_t token_count = 0;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -99,14 +104,33 @@ MainWindow::MainWindow(QWidget *parent) :
     manager = new QNetworkAccessManager(this);
     connect(manager,QNetworkAccessManager::finished, this, replyFinished);
 
-    m_map.insert("e255376edce928657f06f5b9753225d4", "sub_1.jpg");
-    m_map.insert("bbfd00a1f794cd1fc9f304b7d0777bf8", "sub_2.jpg");
-    m_map.insert("061cb7f6da8ccf6a870343a1568edb31", "sub_3.jpg");
-    m_map.insert("99e814cae2f673923b4417a181983b22", "sub_4.jpg");
-    m_map.insert("793eeacdcb84331cf2c232a665903482", "sub_5.jpg");
-    m_map.insert("48be414d747aec95d1c252abafd54d86", "sub_6.jpg");
-    m_map.insert("7d5b234352e73fe05e0a1e610145ee5e", "sub_7.jpg");
-    m_map.insert("c4cc52fb124057d0573fbd2ad0cee051", "sub_8.jpg");
+    QXmlStreamReader xmlread;
+    QFile xml_f;
+    QString i_token,i_name;
+
+    xml_f.setFileName("./img/img.xml");
+    if(xml_f.open(QFile::ReadOnly))
+    {
+        xmlread.setDevice(&xml_f);
+        while(!xmlread.atEnd())
+        {
+            QXmlStreamReader::TokenType type = xmlread.readNext();
+            if(type == QXmlStreamReader::StartElement)
+            {
+                if(xmlread.attributes().hasAttribute("token"))
+                {
+                    i_token = xmlread.attributes().value("token").toString();
+                }
+            }
+            else if(type == QXmlStreamReader::Characters && !xmlread.isWhitespace())
+            {
+                i_name = xmlread.text().toString();
+                m_map.insert(i_token, i_name);
+                token_count++;
+            }
+        }
+        xml_f.close();
+    }
 
 }
 
@@ -142,38 +166,165 @@ void MainWindow::post_search(QByteArray &data)
     part.setBody("698a44cfe95d476acdf1f3f89c1e8ce7");
     multpart->append(part);
 
+    post_state = 0x01;
     manager->post(request, multpart);
 }
 
+void MainWindow::post_detect(QByteArray &data)
+{
+    QUrl url;
+    url.setUrl("https://api-cn.faceplusplus.com/facepp/v3/detect");
+    QNetworkRequest request;
+    request.setUrl(url);
+
+    QHttpMultiPart *multpart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
+    /**KEY*/
+    QHttpPart part;
+    part.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data;name=\"api_key\""));
+    part.setBody("deWn4DAEuE-y9EbZ4Q73FZMioyiQC46g");
+    multpart->append(part);
+
+    /**secret*/
+    part.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data;name=\"api_secret\""));
+    part.setBody("38drPhQ0OjpOgybOVE-81kJn-DeizdFZ");
+    multpart->append(part);
+
+    QHttpPart img_part;
+    /**image_url1*/
+    img_part.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data;name=\"image_file\";filename=\"1\""));
+    img_part.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/octet-stream"));
+    img_part.setBody(data);
+    multpart->append(img_part);
+
+    post_state = 0x02;
+    manager->post(request, multpart);
+}
+
+
+void MainWindow::post_add(QString &token)
+{
+    QUrl url;
+    url.setUrl("https://api-cn.faceplusplus.com/facepp/v3/faceset/addface");
+    QNetworkRequest request;
+    request.setUrl(url);
+
+    QHttpMultiPart *multpart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
+    /**KEY*/
+    QHttpPart part;
+    part.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data;name=\"api_key\""));
+    part.setBody("deWn4DAEuE-y9EbZ4Q73FZMioyiQC46g");
+    multpart->append(part);
+
+    /**secret*/
+    part.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data;name=\"api_secret\""));
+    part.setBody("38drPhQ0OjpOgybOVE-81kJn-DeizdFZ");
+    multpart->append(part);
+
+    /**faceset_token*/
+    part.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data;name=\"faceset_token\""));
+    part.setBody("698a44cfe95d476acdf1f3f89c1e8ce7");
+    multpart->append(part);
+
+    /**token*/
+    part.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data;name=\"face_tokens\""));
+    part.setBody(token.toLatin1());
+    multpart->append(part);
+
+    post_state = 0x03;
+    manager->post(request, multpart);
+}
 
 void MainWindow::replyFinished(QNetworkReply *reply)
 {
     QString all = reply->readAll();
     int index = 0;
+    QString res;
+    char name[64];
+    int opt;
     reply->deleteLater();
-    index = all.lastIndexOf("face_token");
-    if(index >= 0)
+    if(post_state == 0x1)
     {
-        QString res;
-        res = all.mid(index + strlen("face_token") + 4, 32);
-        ui->search_result->setText(res);
-
-        if(m_map.contains(res))
+        post_state = 0x0;
+        index = all.lastIndexOf("face_token");
+        if(index >= 0)
         {
-            ui->search_result->setText("匹配成功 o(∩_∩)o 哈哈");
-            show_img_l(m_map.value(res));
-        }
-        else
-        {
-            ui->search_result->setText("未匹配成功~~~~(>_<)~~~~");
-            show_start_img2();
+            res = all.mid(index + strlen("face_token") + 4, 32);
+            if(m_map.contains(res))
+            {
+                ui->search_result->setText("匹配成功 o(∩_∩)o 哈哈");
+                show_img_l(m_map.value(res));
+                return;
+            }
         }
 
-    }
-    else
-    {
         ui->search_result->setText("未匹配成功~~~~(>_<)~~~~");
         show_start_img2();
+        opt = QMessageBox::information(this, "Hi", "未匹配成功，是否将此图上传至图片库？",QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+
+        if(opt == QMessageBox::Yes)
+        {
+            post_detect(face_pp_data);
+        }
+    }
+    else if(post_state == 0x2)
+    {
+        post_state = 0x0;
+        index = all.lastIndexOf("face_token");
+        if(index >= 0)
+        {
+            res = all.mid(index + strlen("face_token") + 4, 32);
+            token_count++;
+            sprintf(name, "sub_%d.jpg", token_count);
+            QString new_f = "./img/";
+            new_f.append(name);
+            QFile add_f;
+            add_f.setFileName(new_f);
+            add_f.open(QFile::ReadWrite);
+            add_f.write(face_pp_data);
+            add_f.close();
+
+            QXmlStreamWriter xml_w;
+            QMap<QString, QString>::const_iterator i;
+            add_f.setFileName("./img/img.xml");
+            if(add_f.open(QFile::ReadWrite))
+            {
+                xml_w.setDevice(&add_f);
+                xml_w.setAutoFormatting(true);
+                xml_w.writeStartDocument();
+                xml_w.writeStartElement("root");
+
+                for(i = m_map.constBegin();i != m_map.constEnd();i++)
+                {
+                    xml_w.writeStartElement("img");
+                    xml_w.writeAttribute("token",i.key());
+                    xml_w.writeTextElement("name", i.value());
+                    xml_w.writeEndElement();
+                }
+
+                xml_w.writeStartElement("img");
+                xml_w.writeAttribute("token",res);
+                xml_w.writeTextElement("name", name);
+                xml_w.writeEndElement();
+
+                xml_w.writeEndElement();
+                add_f.close();
+            }
+            m_map.insert(res, name);
+            post_add(res);
+        }
+    }
+    else if(post_state == 0x3)
+    {
+        post_state = 0x0;
+        index = all.lastIndexOf("face_added");
+        if(index >= 0)
+        {
+            res = all.mid(index + strlen("face_added") + 3, 1);
+            if(res == '1')
+            {
+                QMessageBox::information(this, "Hi", "添加成功！", QMessageBox::Ok, QMessageBox::Ok);
+            }
+        }
     }
 
 }
@@ -224,7 +375,6 @@ void MainWindow::show_img()
     QString name;
     QString path_l;
     QFile file_r;
-    QByteArray data;
     if(j_count > 0)
     {
         len = sprintf(table, "/%03d.jpeg",j_count - 1);
@@ -246,9 +396,9 @@ void MainWindow::show_img()
     file_r.setFileName(path_l);
     if(file_r.open(QFile::ReadWrite))
     {
-        data = file_r.readAll();
+        face_pp_data = file_r.readAll();
         file_r.close();
-        post_search(data);
+        post_search(face_pp_data);
     }
 
 }
@@ -267,48 +417,9 @@ void MainWindow::timer_timeout()
     char stable[16];
 
     len = uartModule.uartReadBuff(buf_tmp);
-    if(len > 50)
+    if(len > 0)
     {
         tt = 0;
-        if(buf_tmp[0] == 0xff && buf_tmp[1] == 0xd8 && buf_tmp[2] == 0xff && buf_tmp[3] == 0xe0 && buf_tmp[4] == 0x00
-                && buf_tmp[5] == 0x10 && buf_tmp[6] == 0x4a && buf_tmp[7] == 0x46)
-        {
-            if(w_file)
-            {
-                file_j.write((const char *)buf, f_si);
-                file_j.close();
-                w_file = false;
-                f_si = 0;
-                w_index = 0xfffff;
-
-                tim = QTime::currentTime();
-                s_msec = tim.msecsSinceStartOfDay() - s_msec;
-                ui->textEdit->append("jpeg ok");
-                sprintf(stable, ":%dms\r\n", s_msec);
-                ui->textEdit->append(stable);
-                show_img(); 
-            }
-            if(!w_file)
-            {
-                tim = QTime::currentTime();
-                s_msec = tim.msecsSinceStartOfDay();
-                char timtable[64];
-                sprintf(timtable, "%d:%d:%d %d", tim.hour(),tim.minute(),tim.second(),tim.msec());
-                ui->textEdit->append(timtable);
-                sprintf(name, "/%03d.jpeg",j_count);
-                ui->textEdit->append(name);
-                QString path_l;
-                path_l = path;
-                path_l = path_l.append(name);
-
-                file_j.setFileName(path_l);
-                file_j.open(QFile::ReadWrite);
-                j_count++;
-                w_file = true;
-                f_si = 0;
-                w_index = 0xfffff;
-            }
-        }
         if(w_file)
         {
             memcpy(buf + f_si, buf_tmp, len);
@@ -336,46 +447,65 @@ void MainWindow::timer_timeout()
                     }
                 }
             }
-         }
+
+        }
+        else
+        {
+            if(buf_tmp[0] == 0xff && buf_tmp[1] == 0xd8 && buf_tmp[2] == 0xff && buf_tmp[3] == 0xe0 && buf_tmp[4] == 0x00
+                    && buf_tmp[5] == 0x10 && buf_tmp[6] == 0x4a && buf_tmp[7] == 0x46)
+            {
+                tim = QTime::currentTime();
+                s_msec = tim.msecsSinceStartOfDay();
+                char timtable[64];
+                sprintf(timtable, "%d:%d:%d %d", tim.hour(),tim.minute(),tim.second(),tim.msec());
+                ui->textEdit->append(timtable);
+                sprintf(name, "/%03d.jpeg",j_count);
+                ui->textEdit->append(name);
+                QString path_l;
+                path_l = path;
+                path_l = path_l.append(name);
+
+                file_j.setFileName(path_l);
+                file_j.open(QFile::ReadWrite);
+                j_count++;
+                w_file = true;
+                f_si = 0;
+                w_index = 0xfffff;
+
+                memcpy(buf + f_si, buf_tmp, len);
+                w_index = f_si;
+                f_si += len;
+
+            }
+            else
+                uart_parse_command(buf_tmp, len);
+        }
+
+
     }
     else
     {
         tt++;
-
-        if(w_file)
+        if(tt > 500 && w_file)
         {
-
-            if(tt > 3000)
-            {
-                file_j.write((const char *)buf, f_si);
-                file_j.close();
-                w_file = false;
-                f_si = 0;
-                tim = QTime::currentTime();
-                s_msec = tim.msecsSinceStartOfDay() - s_msec;
-                ui->textEdit->append("timeout");
-                sprintf(stable, ":%dms\r\n", s_msec);
-                ui->textEdit->append(stable);
-                show_img();
-            }
-            else
-            {
-                if(w_file && tt > 10 && w_index != 0xfffff)
-                {
-                    f_si = w_index;
-                    w_index = 0xfffff;
-                }
-            }
+            file_j.write((const char *)buf, f_si);
+            file_j.close();
+            w_file = false;
+            f_si = 0;
+            tim = QTime::currentTime();
+            s_msec = tim.msecsSinceStartOfDay() - s_msec;
+            ui->textEdit->append("timeout");
+            sprintf(stable, ":%dms\r\n", s_msec);
+            ui->textEdit->append(stable);
+            show_img();
         }
-        else
+        else if(tt > 50 && w_index != 0xfffff && w_file)
         {
-            tt = 0;
-        }
-        if(len > 0)
-        {
-            uart_parse_command(buf_tmp, len);
+            f_si = w_index;
+            w_index = 0xfffff;
         }
     }
+
     if(show_len > 0)
     {
         ui->textEdit->append(show_table);
@@ -403,9 +533,7 @@ void MainWindow::timer_timeout()
         }
         uart_record.flag = 2;
     }
-
-
-    quartTimer->start(50);
+    quartTimer->start(10);
 }
 
 
