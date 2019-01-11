@@ -405,7 +405,7 @@ void MainWindow::show_img()
 
 
 
-uint32_t w_index = 0xfffff;
+
 uint32_t s_msec = 0;
 char show_table[1024];
 int show_len = 0;
@@ -423,8 +423,6 @@ void MainWindow::timer_timeout()
         if(w_file)
         {
             memcpy(buf + f_si, buf_tmp, len);
-            if(w_index == 0xfffff)
-                w_index = f_si;
             f_si += len;
 
             for(i = 0;(i < f_si && i < 55);i++)
@@ -470,10 +468,8 @@ void MainWindow::timer_timeout()
                 j_count++;
                 w_file = true;
                 f_si = 0;
-                w_index = 0xfffff;
 
                 memcpy(buf + f_si, buf_tmp, len);
-                w_index = f_si;
                 f_si += len;
 
             }
@@ -486,7 +482,7 @@ void MainWindow::timer_timeout()
     else
     {
         tt++;
-        if(tt > 500 && w_file)
+        if(tt > 50 && w_file)
         {
             file_j.write((const char *)buf, f_si);
             file_j.close();
@@ -497,12 +493,6 @@ void MainWindow::timer_timeout()
             ui->textEdit->append("timeout");
             sprintf(stable, ":%dms\r\n", s_msec);
             ui->textEdit->append(stable);
-            show_img();
-        }
-        else if(tt > 50 && w_index != 0xfffff && w_file)
-        {
-            f_si = w_index;
-            w_index = 0xfffff;
         }
     }
 
