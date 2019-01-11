@@ -19,6 +19,8 @@
 #include "QXmlStreamReader"
 #include "QXmlStreamWriter"
 
+#include "qcolordialog.h"
+
 uartClass uartModule;
 
 extern "C" void b_tp_port_uart_send(uint8_t *pbuf, uint32_t len);
@@ -131,6 +133,23 @@ MainWindow::MainWindow(QWidget *parent) :
         }
         xml_f.close();
     }
+
+    xml_f.setFileName("./color.xml");
+    if(xml_f.open(QFile::ReadOnly))
+    {
+        xmlread.setDevice(&xml_f);
+        while(!xmlread.atEnd())
+        {
+            QXmlStreamReader::TokenType type = xmlread.readNext();
+            if(type == QXmlStreamReader::Characters && !xmlread.isWhitespace())
+            {
+                QString color_str = xmlread.text().toString();
+                this->setStyleSheet(color_str);
+            }
+        }
+        xml_f.close();
+    }
+
 
 }
 
@@ -651,4 +670,37 @@ void MainWindow::on_settime_clicked()
     tim_c = QTime::currentTime();
     protocol_set_time(date_c.year(), date_c.month(), date_c.day()
                       ,tim_c.hour(), tim_c.minute(), tim_c.second());
+}
+
+void MainWindow::on_color_sel_clicked()
+{
+    QColorDialog dialog;
+    QColor sel_color;
+    char color_table[64];
+    QXmlStreamWriter xml_write;
+    QFile xml_f;
+    QString str = "background-color:";
+    sel_color = dialog.getColor(Qt::white,this, "color", QColorDialog::ShowAlphaChannel);
+    if(sel_color.isValid())
+    {
+        sprintf(color_table, "rgb(%d,%d,%d);",sel_color.red(), sel_color.green(), sel_color.blue());
+        str.append(color_table);
+        this->setStyleSheet(str);
+
+        xml_f.setFileName("./color.xml");
+        if(xml_f.open(QFile::ReadWrite))
+        {
+            xml_write.setDevice(&xml_f);
+
+            xml_write.writeStartDocument();
+            xml_write.writeStartElement("color");
+            xml_write.writeTextElement("color_string", str);
+            xml_write.writeEndElement();
+            xml_write.writeEndDocument();
+            xml_f.close();
+        }
+
+
+
+    }
 }

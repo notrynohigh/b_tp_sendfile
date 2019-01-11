@@ -43,6 +43,8 @@ private slots:
 
     void on_settime_clicked();
     void replyFinished(QNetworkReply *);
+    void on_color_sel_clicked();
+
 private:
     Ui::MainWindow *ui;
     QTimer *quartTimer;
