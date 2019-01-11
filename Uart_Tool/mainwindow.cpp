@@ -444,7 +444,7 @@ void MainWindow::timer_timeout()
             memcpy(buf + f_si, buf_tmp, len);
             f_si += len;
 
-            for(i = 0;(i < f_si && i < 55);i++)
+            for(i = 0;(i < f_si && i < 110);i++)
             {
                 if(buf[f_si - 1 - i] == 0xd9)
                 {
