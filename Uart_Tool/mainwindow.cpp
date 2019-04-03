@@ -27,8 +27,9 @@ extern "C" void b_tp_port_uart_send(uint8_t *pbuf, uint32_t len);
 extern "C" void uart_cmd_dispatch(uart_cmd_struct_t uart_cmd_struct);
 
 uint16_t battery_mv = 0;
+uint8_t token_id = 0;
 uart_record_t uart_record = {0, 1, 1 , 2, 3};
-
+uint32_t dd_id = 0;
 
 QMap<QString, QString> m_map;
 
@@ -528,6 +529,13 @@ void MainWindow::timer_timeout()
         battery_mv = 0;
     }
 
+    if(token_id > 0)
+    {
+        sprintf(rtable, "%x",token_id);
+        ui->token_text->setText(rtable);
+        token_id = 0;
+    }
+
     if(uart_record.flag == 1)
     {
         sprintf(rtable, "%02d-%02d %02d:%02d拆机",uart_record.month, uart_record.day, uart_record.hour, uart_record.minute);
@@ -542,6 +550,22 @@ void MainWindow::timer_timeout()
         }
         uart_record.flag = 2;
     }
+
+    if(uart_record.id != 0)
+    {
+        sprintf(rtable, "设备id:%x",uart_record.id);
+        ui->textEdit->append(rtable);
+        uart_record.id = 0;
+    }
+
+    if(dd_id != 0)
+    {
+        sprintf(rtable, "设备id:%x",dd_id);
+        ui->textEdit->append(rtable);
+        dd_id = 0;
+    }
+
+
     quartTimer->start(10);
 }
 
@@ -570,6 +594,7 @@ void uart_cmd_dispatch(uart_cmd_struct_t uart_cmd_struct)
     uart_time_struct_t *puart_time_struct = (uart_time_struct_t *)uart_cmd_struct.pbuf;
     uart_battery_mv_t *puart_battery_mv = (uart_battery_mv_t *)uart_cmd_struct.pbuf;
     uart_record_t *puart_record = (uart_record_t *)uart_cmd_struct.pbuf;
+    uart_token_t *pid = (uart_token_t *)uart_cmd_struct.pbuf;
     switch(uart_cmd_struct.cmd)
     {
         case UART_CMD_GET_TIME:
@@ -578,10 +603,14 @@ void uart_cmd_dispatch(uart_cmd_struct_t uart_cmd_struct)
             break;
         case UART_CMD_BATTERY:
             battery_mv = puart_battery_mv->mv;
+            dd_id = puart_battery_mv->id;
             break;
         case UART_CMD_BREAK:
            memcpy(&uart_record, puart_record, sizeof(uart_record_t));
            //show_len = sprintf(show_table, "%02d-%02d %02d:%02d拆机",uart_record.month, uart_record.day, uart_record.hour, uart_record.minute);
+            break;
+        case UART_CMD_GET_ID:
+            token_id = pid->token;
             break;
         default:
         break;
@@ -610,6 +639,7 @@ void MainWindow::on_opencom_clicked()
         {
             ui->COMx->setEnabled(false);
             ui->opencom->setText("关闭串口");
+            protocol_read_id();
         }
     }
 }

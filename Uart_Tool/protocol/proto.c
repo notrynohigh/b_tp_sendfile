@@ -81,6 +81,10 @@ void protocol_read_time()
     uart_protocol_send(UART_CMD_GET_TIME, 0, NULL, 0);
 }
 
+void protocol_read_id()
+{
+    uart_protocol_send(UART_CMD_GET_ID, 0, NULL, 0);
+}
 
 void protocol_set_time(int year, uint8_t month, uint8_t day, uint8_t hour, uint8_t min, uint8_t second)
 {

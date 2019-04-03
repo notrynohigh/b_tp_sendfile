@@ -60,6 +60,8 @@ public:
     QDial *dial;
     QLabel *label_2;
     QLabel *label_3;
+    QLabel *token_text;
+    QLabel *label_5;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -227,6 +229,12 @@ public:
         label_3 = new QLabel(centralWidget);
         label_3->setObjectName(QStringLiteral("label_3"));
         label_3->setGeometry(QRect(770, 670, 54, 12));
+        token_text = new QLabel(centralWidget);
+        token_text->setObjectName(QStringLiteral("token_text"));
+        token_text->setGeometry(QRect(520, 30, 91, 31));
+        label_5 = new QLabel(centralWidget);
+        label_5->setObjectName(QStringLiteral("label_5"));
+        label_5->setGeometry(QRect(520, 10, 71, 16));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -265,6 +273,8 @@ public:
         battery->setText(QApplication::translate("MainWindow", "\347\224\265\351\207\217\357\274\232", Q_NULLPTR));
         label_2->setText(QApplication::translate("MainWindow", "\346\213\215\346\221\204\345\233\276\347\211\207", Q_NULLPTR));
         label_3->setText(QApplication::translate("MainWindow", "\345\214\271\351\205\215\345\233\276\347\211\207", Q_NULLPTR));
+        token_text->setText(QString());
+        label_5->setText(QApplication::translate("MainWindow", "\346\216\245\346\224\266\347\253\257ID\357\274\232", Q_NULLPTR));
     } // retranslateUi
 
 };

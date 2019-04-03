@@ -719,7 +719,8 @@ release/mainwindow.o: mainwindow.cpp mainwindow.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/QMessageBox \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/qmessagebox.h \
 		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/QXmlStreamReader \
-		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/QXmlStreamWriter
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtCore/QXmlStreamWriter \
+		C:/Qt/Qt5.8.0/5.8/mingw53_32/include/QtWidgets/qcolordialog.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\mainwindow.o mainwindow.cpp
 
 release/b_tp.o: b_tp/src/b_tp.c b_tp/inc/b_tp.h \

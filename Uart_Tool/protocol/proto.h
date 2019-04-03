@@ -15,6 +15,7 @@ extern "C" {
 #define UART_CMD_GET_TIME      0X56
 #define UART_CMD_BATTERY       0X57
 #define UART_CMD_BREAK         0X58
+#define UART_CMD_GET_ID        0X59
 
 #pragma pack(1)
 
@@ -66,6 +67,7 @@ typedef struct
 typedef struct
 {
     uint16_t mv;
+    uint32_t id;
 }uart_battery_mv_t;
 
 typedef struct
@@ -75,7 +77,13 @@ typedef struct
     uint8_t day;
     uint8_t hour;
     uint8_t minute;
+    uint32_t id;
 }uart_record_t;
+
+typedef struct
+{
+    uint8_t token;
+}uart_token_t;
 
 
 #pragma pack()
@@ -83,7 +91,7 @@ typedef struct
 void uart_parse_command(uint8_t *pbuf, uint32_t len);
 void protocol_set_time(int year, uint8_t month, uint8_t day, uint8_t hour, uint8_t min, uint8_t second);
 void protocol_read_time(void);
-
+void protocol_read_id(void);
 #ifdef __cplusplus
 }
 #endif
